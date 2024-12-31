@@ -14,9 +14,16 @@ int main() {
     cin >> boardLength;
     cout << "Enter the board width (>= 4): ";
     cin >> boardWidth;
-    cout << endl;
 
-    clearConsole();
+    while (!isInputBoardSizeValid(boardLength, boardWidth)) {
+        clearConsole();
+        cout << "Invalid board size! Please, enter new board size." << endl;
+
+        cout << "Enter the board length (>= 4): ";
+        cin >> boardLength;
+        cout << "Enter the board width (>= 4): ";
+        cin >> boardWidth;
+    }
 
     return 0;
 }
