@@ -46,6 +46,10 @@ int main() {
         cin >> boardWidth;
     }
 
+    for (size_t i = 0; i < 30; i++) {
+        cout << getRandomNumberInInterval(10) << endl;
+    }
+
     return 0;
 }
 
@@ -79,9 +83,9 @@ int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth) {
 }
 
 //Function to generate the numbers and math operations on the board 
-//(random number >=0 & < maxValue)
+//(random number >0 & <= maxValue)
 int getRandomNumberInInterval(int maxValue) {
-    int randomNumber = rand() % maxValue;
+    int randomNumber = 1 + (rand() % maxValue);
 
     return randomNumber;
 }
