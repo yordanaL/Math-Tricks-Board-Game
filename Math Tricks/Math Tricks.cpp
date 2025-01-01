@@ -14,9 +14,11 @@ void createGrid(bool** &grid, size_t rows, size_t cols);
 
 void deleteGrid(char** &grid, size_t rows);
 void deleteGrid(int** &grid, size_t rows);
-void deleteGrid(bool**& grid, size_t rows);
+void deleteGrid(bool** &grid, size_t rows);
 
-void printGrid(const char**& grid, size_t rows, size_t cols);
+void printGrid(const char** &grid, size_t rows, size_t cols);
+void printGrid(const int** &grid, size_t rows, size_t cols);
+void printGrid(const bool** &grid, size_t rows, size_t cols);
 
 int main() {
     //A seed for the random number function
@@ -130,7 +132,26 @@ void deleteGrid(bool** &grid, size_t rows) {
     delete[] grid;
 }
 
-void printGrid(const char**& grid, size_t rows, size_t cols) {
+//Functions to print char, int, bool grids 
+void printGrid(const char** &grid, size_t rows, size_t cols) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            cout << grid[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void printGrid(const int** &grid, size_t rows, size_t cols) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            cout << grid[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void printGrid(const bool** &grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
