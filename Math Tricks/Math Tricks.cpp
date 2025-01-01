@@ -8,6 +8,10 @@ void clearConsole();
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth);
 int getRandomNumberInInterval(int maxValue);
 
+void createGrid(char** &grid, size_t rows, size_t cols);
+void createGrid(int** &grid, size_t rows, size_t cols);
+void createGrid(bool** &grid, size_t rows, size_t cols);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -67,4 +71,28 @@ int getRandomNumberInInterval(int maxValue) {
     int randomNumber = rand() % maxValue;
 
     return randomNumber;
+}
+
+void createGrid(char** &grid, size_t rows, size_t cols) {
+    grid = new char*[rows];
+
+    for (size_t i = 0; i < rows; i++) {
+        grid[i] = new char[cols];
+    }
+}
+
+void createGrid(int** &grid, size_t rows, size_t cols) {
+    grid = new int* [rows];
+
+    for (size_t i = 0; i < rows; i++) {
+        grid[i] = new int[cols];
+    }
+}
+
+void createGrid(bool** &grid, size_t rows, size_t cols) {
+    grid = new bool* [rows];
+
+    for (size_t i = 0; i < rows; i++) {
+        grid[i] = new bool[cols];
+    }
 }
