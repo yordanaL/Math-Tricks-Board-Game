@@ -24,8 +24,8 @@ void printGrid(const bool**& grid, size_t rows, size_t cols);
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength);
 void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoefficient);
 
-bool isHalfBoardFulfillingBoardRequirements(const char*& mathOperationsArr, size_t mathOperationsArrLength,
-    const int*& numArr, size_t numArrLength);
+bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
+    int*& numArr, size_t numArrLength);
 
 int main() {
     //A seed for the random number function
@@ -49,13 +49,16 @@ int main() {
         cin >> boardWidth;
     }
 
-    size_t signArrLength = boardLength * boardWidth / 2;
-    char* signArr = new char[signArrLength];
+    size_t mathOperationsArrLength = boardLength * boardWidth / 2;
+    char* mathOperationsArr = new char[mathOperationsArrLength];
 
     size_t numArrLength = boardLength * boardWidth / 2;
-    int* numArr = new int[signArrLength];
+    int* numArr = new int[numArrLength];
 
     int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
+
+    delete[] mathOperationsArr;
+    delete[] numArr;
 
     return 0;
 }
@@ -76,9 +79,7 @@ void clearConsole() {
 //A higher difficulty coefficient will give chance for bigger numbers to appear on the board
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth) {
     size_t boardSize = boardLength * boardWidth;
-    int difficultyCoefficient = 0;
-
-    difficultyCoefficient = boardSize / 100 + 1;
+    int difficultyCoefficient = (int)boardSize / 100 + 1;
 
     const int MIN_COEFFICIENT = 1, MAX_COEFFICIENT = 10;
 
@@ -125,7 +126,7 @@ void createGrid(bool**& grid, size_t rows, size_t cols) {
 //Functions to delete dynamic char, int and bool grids
 void deleteGrid(char**& grid, size_t rows) {
     for (size_t i = 0; i < rows; i++) {
-        delete grid[i];
+        delete[] grid[i];
     }
 
     delete[] grid;
@@ -133,7 +134,7 @@ void deleteGrid(char**& grid, size_t rows) {
 
 void deleteGrid(int**& grid, size_t rows) {
     for (size_t i = 0; i < rows; i++) {
-        delete grid[i];
+        delete[] grid[i];
     }
 
     delete[] grid;
@@ -141,7 +142,7 @@ void deleteGrid(int**& grid, size_t rows) {
 
 void deleteGrid(bool**& grid, size_t rows) {
     for (size_t i = 0; i < rows; i++) {
-        delete grid[i];
+        delete[] grid[i];
     }
 
     delete[] grid;
@@ -215,9 +216,8 @@ void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoeffici
     }
 }
 
-bool isHalfBoardFulfillingBoardRequirements(const char*& mathOperationsArr, size_t mathOperationsArrLength,
-    const int*& numArr, size_t numArrLength) {
-    
+bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
+    int*& numArr, size_t numArrLength) {
     bool metAddition = false;
     bool metSubtraction = false;
     bool metZero = false;
