@@ -2,6 +2,7 @@
 using namespace std;
 
 const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
+const int NUMBER_OF_MATH_OPERATIONS = 5;
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
@@ -19,6 +20,9 @@ void deleteGrid(bool**& grid, size_t rows);
 void printGrid(const char**& grid, size_t rows, size_t cols);
 void printGrid(const int**& grid, size_t rows, size_t cols);
 void printGrid(const bool**& grid, size_t rows, size_t cols);
+
+void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength);
+void randomGenNumArray(int*& arr, size_t numArrLength, int difficultyCoefficient);
 
 int main() {
     //A seed for the random number function
@@ -75,7 +79,7 @@ int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth) {
 }
 
 //Function to generate the numbers and math operations on the board 
-//(random number >=0 & <= maxValue)
+//(random number >=0 & < maxValue)
 int getRandomNumberInInterval(int maxValue) {
     int randomNumber = rand() % maxValue;
 
@@ -157,5 +161,45 @@ void printGrid(const bool**& grid, size_t rows, size_t cols) {
             cout << grid[i][j] << " ";
         }
         cout << endl;
+    }
+}
+
+
+//Generating random math operation array to later use it to build the game board
+void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength) {
+    //A seed for the random number function
+    srand((unsigned)time(0));
+
+    int mathOperationCode = 0; //0- "no sign"/"0"; 1 - "+"; 2 - "-"; 3 - "*"; 4 - "/"
+    for (size_t i = 0; i < mathOperationsArrLength; i++) {
+        mathOperationCode = getRandomNumberInInterval(NUMBER_OF_MATH_OPERATIONS);
+
+        if (mathOperationCode == 0) {
+            mathOperationsArr[i] = ' ';
+        }
+        else if (mathOperationCode == 1) {
+            mathOperationsArr[i] = '+';
+        }
+        else if (mathOperationCode == 2) {
+            mathOperationsArr[i] = '-';
+        }
+        else if (mathOperationCode == 3) {
+            mathOperationsArr[i] = '*';
+        }
+        else if (mathOperationCode == 4) {
+            mathOperationsArr[i] = '/';
+        }
+    }
+}
+
+//Generating random number array to later use it to build the game board
+void randomGenNumArray(int*& arr, size_t numArrLength, int difficultyCoefficient) {
+    //A seed for the random number function
+    srand((unsigned)time(0));
+
+    int maxValue = 10 * difficultyCoefficient;
+
+    for (size_t i = 0; i < numArrLength; i++) {
+        arr[i] = getRandomNumberInInterval(maxValue);
     }
 }
