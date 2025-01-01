@@ -14,7 +14,9 @@ void createGrid(bool** &grid, size_t rows, size_t cols);
 
 void deleteGrid(char** &grid, size_t rows);
 void deleteGrid(int** &grid, size_t rows);
-void deleteGrid(bool** &grid, size_t rows);
+void deleteGrid(bool**& grid, size_t rows);
+
+void printGrid(const char**& grid, size_t rows, size_t cols);
 
 int main() {
     //A seed for the random number function
@@ -71,6 +73,7 @@ int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth) {
 }
 
 //Function to generate the numbers and math operations on the board 
+//(random number >=0 & <= maxValue)
 int getRandomNumberInInterval(int maxValue) {
     int randomNumber = rand() % maxValue;
 
@@ -125,4 +128,13 @@ void deleteGrid(bool** &grid, size_t rows) {
     }
 
     delete[] grid;
+}
+
+void printGrid(const char**& grid, size_t rows, size_t cols) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            cout << grid[i][j] << " ";
+        }
+        cout << endl;
+    }
 }
