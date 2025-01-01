@@ -225,7 +225,8 @@ bool isHalfBoardFulfillingBoardRequirements(const char*& mathOperationsArr, size
     bool metDivisionByTwo = false;
 
     //mathOperationsArrLength = numArrLength
-    for (size_t i = 0; i < mathOperationsArrLength; i++) {
+    //i = 1, because the cell (0, 0) will be later set to 0
+    for (size_t i = 1; i < mathOperationsArrLength; i++) {
         if (mathOperationsArr[i] == '+') {
             metAddition = true;
         }
@@ -248,3 +249,4 @@ bool isHalfBoardFulfillingBoardRequirements(const char*& mathOperationsArr, size
 
     return (metAddition && metSubtraction && metZero && metMultiplicationWithTwo && metDivisionByTwo);
 }
+
