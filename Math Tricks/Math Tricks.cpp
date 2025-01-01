@@ -6,8 +6,12 @@ const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth);
+int getRandomNumberInInterval(int maxValue);
 
 int main() {
+    //A seed for the random number function
+    srand((unsigned)time(0));
+
     //Read the board size from the console
     size_t boardLength = MIN_BOARD_LENGTH, boardWidth = MIN_BOARD_WIDTH;
     cout << "To start the game enter the board size." << endl;
@@ -56,4 +60,11 @@ int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth) {
     }
 
     return difficultyCoefficient;
+}
+
+//Function to generate the numbers and math operations on the board 
+int getRandomNumberInInterval(int maxValue) {
+    int randomNumber = rand() % maxValue;
+
+    return randomNumber;
 }
