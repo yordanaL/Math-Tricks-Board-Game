@@ -12,6 +12,10 @@ void createGrid(char** &grid, size_t rows, size_t cols);
 void createGrid(int** &grid, size_t rows, size_t cols);
 void createGrid(bool** &grid, size_t rows, size_t cols);
 
+void deleteGrid(char** &grid, size_t rows);
+void deleteGrid(int** &grid, size_t rows);
+void deleteGrid(bool** &grid, size_t rows);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -73,6 +77,7 @@ int getRandomNumberInInterval(int maxValue) {
     return randomNumber;
 }
 
+//Functions to create dynamic char, int and bool grids
 void createGrid(char** &grid, size_t rows, size_t cols) {
     grid = new char*[rows];
 
@@ -95,4 +100,29 @@ void createGrid(bool** &grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         grid[i] = new bool[cols];
     }
+}
+
+//Functions to delete dynamic char, int and bool grids
+void deleteGrid(char** &grid, size_t rows) {
+    for (size_t i = 0; i < rows; i++) {
+        delete grid[i];
+    }
+
+    delete[] grid;
+}
+
+void deleteGrid(int** &grid, size_t rows) {
+    for (size_t i = 0; i < rows; i++) {
+        delete grid[i];
+    }
+
+    delete[] grid;
+}
+
+void deleteGrid(bool** &grid, size_t rows) {
+    for (size_t i = 0; i < rows; i++) {
+        delete grid[i];
+    }
+
+    delete[] grid;
 }
