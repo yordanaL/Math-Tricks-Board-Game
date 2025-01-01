@@ -8,17 +8,17 @@ void clearConsole();
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth);
 int getRandomNumberInInterval(int maxValue);
 
-void createGrid(char** &grid, size_t rows, size_t cols);
-void createGrid(int** &grid, size_t rows, size_t cols);
-void createGrid(bool** &grid, size_t rows, size_t cols);
+void createGrid(char**& grid, size_t rows, size_t cols);
+void createGrid(int**& grid, size_t rows, size_t cols);
+void createGrid(bool**& grid, size_t rows, size_t cols);
 
-void deleteGrid(char** &grid, size_t rows);
-void deleteGrid(int** &grid, size_t rows);
-void deleteGrid(bool** &grid, size_t rows);
+void deleteGrid(char**& grid, size_t rows);
+void deleteGrid(int**& grid, size_t rows);
+void deleteGrid(bool**& grid, size_t rows);
 
-void printGrid(const char** &grid, size_t rows, size_t cols);
-void printGrid(const int** &grid, size_t rows, size_t cols);
-void printGrid(const bool** &grid, size_t rows, size_t cols);
+void printGrid(const char**& grid, size_t rows, size_t cols);
+void printGrid(const int**& grid, size_t rows, size_t cols);
+void printGrid(const bool**& grid, size_t rows, size_t cols);
 
 int main() {
     //A seed for the random number function
@@ -83,7 +83,7 @@ int getRandomNumberInInterval(int maxValue) {
 }
 
 //Functions to create dynamic char, int and bool grids
-void createGrid(char** &grid, size_t rows, size_t cols) {
+void createGrid(char**& grid, size_t rows, size_t cols) {
     grid = new char*[rows];
 
     for (size_t i = 0; i < rows; i++) {
@@ -91,7 +91,7 @@ void createGrid(char** &grid, size_t rows, size_t cols) {
     }
 }
 
-void createGrid(int** &grid, size_t rows, size_t cols) {
+void createGrid(int**& grid, size_t rows, size_t cols) {
     grid = new int* [rows];
 
     for (size_t i = 0; i < rows; i++) {
@@ -99,7 +99,7 @@ void createGrid(int** &grid, size_t rows, size_t cols) {
     }
 }
 
-void createGrid(bool** &grid, size_t rows, size_t cols) {
+void createGrid(bool**& grid, size_t rows, size_t cols) {
     grid = new bool* [rows];
 
     for (size_t i = 0; i < rows; i++) {
@@ -108,7 +108,7 @@ void createGrid(bool** &grid, size_t rows, size_t cols) {
 }
 
 //Functions to delete dynamic char, int and bool grids
-void deleteGrid(char** &grid, size_t rows) {
+void deleteGrid(char**& grid, size_t rows) {
     for (size_t i = 0; i < rows; i++) {
         delete grid[i];
     }
@@ -116,7 +116,7 @@ void deleteGrid(char** &grid, size_t rows) {
     delete[] grid;
 }
 
-void deleteGrid(int** &grid, size_t rows) {
+void deleteGrid(int**& grid, size_t rows) {
     for (size_t i = 0; i < rows; i++) {
         delete grid[i];
     }
@@ -124,7 +124,7 @@ void deleteGrid(int** &grid, size_t rows) {
     delete[] grid;
 }
 
-void deleteGrid(bool** &grid, size_t rows) {
+void deleteGrid(bool**& grid, size_t rows) {
     for (size_t i = 0; i < rows; i++) {
         delete grid[i];
     }
@@ -133,7 +133,7 @@ void deleteGrid(bool** &grid, size_t rows) {
 }
 
 //Functions to print char, int, bool grids 
-void printGrid(const char** &grid, size_t rows, size_t cols) {
+void printGrid(const char**& grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
@@ -142,7 +142,7 @@ void printGrid(const char** &grid, size_t rows, size_t cols) {
     }
 }
 
-void printGrid(const int** &grid, size_t rows, size_t cols) {
+void printGrid(const int**& grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
@@ -151,7 +151,7 @@ void printGrid(const int** &grid, size_t rows, size_t cols) {
     }
 }
 
-void printGrid(const bool** &grid, size_t rows, size_t cols) {
+void printGrid(const bool**& grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
