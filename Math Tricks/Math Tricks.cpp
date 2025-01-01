@@ -22,7 +22,10 @@ void printGrid(const int**& grid, size_t rows, size_t cols);
 void printGrid(const bool**& grid, size_t rows, size_t cols);
 
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength);
-void randomGenNumArray(int*& arr, size_t numArrLength, int difficultyCoefficient);
+void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoefficient);
+
+bool isHalfBoardFulfillingBoardRequirements(const char*& mathOperationsArr, size_t mathOperationsArrLength,
+    const int*& numArr, size_t numArrLength);
 
 int main() {
     //A seed for the random number function
@@ -46,9 +49,13 @@ int main() {
         cin >> boardWidth;
     }
 
-    for (size_t i = 0; i < 30; i++) {
-        cout << getRandomNumberInInterval(10) << endl;
-    }
+    size_t signArrLength = boardLength * boardWidth / 2;
+    char* signArr = new char[signArrLength];
+
+    size_t numArrLength = boardLength * boardWidth / 2;
+    int* numArr = new int[signArrLength];
+
+    int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
     return 0;
 }
@@ -197,13 +204,47 @@ void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperation
 }
 
 //Generating random number array to later use it to build the game board
-void randomGenNumArray(int*& arr, size_t numArrLength, int difficultyCoefficient) {
+void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoefficient) {
     //A seed for the random number function
     srand((unsigned)time(0));
 
     int maxValue = 10 * difficultyCoefficient;
 
     for (size_t i = 0; i < numArrLength; i++) {
-        arr[i] = getRandomNumberInInterval(maxValue);
+        numArr[i] = getRandomNumberInInterval(maxValue);
     }
+}
+
+bool isHalfBoardFulfillingBoardRequirements(const char*& mathOperationsArr, size_t mathOperationsArrLength,
+    const int*& numArr, size_t numArrLength) {
+    
+    bool metAddition = false;
+    bool metSubtraction = false;
+    bool metZero = false;
+    bool metMultiplicationWithTwo = false;
+    bool metDivisionByTwo = false;
+
+    //mathOperationsArrLength = numArrLength
+    for (size_t i = 0; i < mathOperationsArrLength; i++) {
+        if (mathOperationsArr[i] == '+') {
+            metAddition = true;
+        }
+        else if (mathOperationsArr[i] == '-') {
+            metSubtraction = true;
+        }
+        else if (mathOperationsArr[i] == ' ') {
+            metZero = true;
+        }
+        else if (mathOperationsArr[i] == '*' && numArr[i] == 2) {
+            metMultiplicationWithTwo = true;
+        }
+        else if (mathOperationsArr[i] == '/' && numArr[i] == 2) {
+            metDivisionByTwo = true;
+        }
+        else {
+            continue;
+        }
+    }
+
+    return (metAddition && metSubtraction && metZero && metMultiplicationWithTwo && metDivisionByTwo);
 }
