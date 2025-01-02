@@ -27,6 +27,9 @@ void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoeffici
 bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
     int*& numArr, size_t numArrLength);
 
+void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
+    int*& numArr, size_t numArrLength, int difficultyCoefficient);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -56,13 +59,6 @@ int main() {
     int* numArr = new int[numArrLength];
 
     int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
-
-    generateHalfBoardUpToTheRequirements(mathOperationsArr, mathOperationsArrLength,
-        numArr, numArrLength, difficultyCoefficient);
-
-    for (size_t i = 0; i < numArrLength; i++) {
-        cout << mathOperationsArr[i] << numArr[i] << endl;
-    }
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -248,4 +244,36 @@ bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mat
     }
 
     return (metAddition && metSubtraction && metZero && metMultiplicationWithTwo && metDivisionByTwo);
+}
+
+//Generating half of the board game to later use it to build the whole game board
+void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
+    int*& numArr, size_t numArrLength, int difficultyCoefficient) {
+    randomGenMathOperationsArray(mathOperationsArr, mathOperationsArrLength);
+    randomGenNumArray(numArr, numArrLength, difficultyCoefficient);
+
+    size_t randomInd = 0;
+    int lastInd = mathOperationsArrLength - 1;
+    while (!isHalfBoardFulfillingBoardRequirements(mathOperationsArr, mathOperationsArrLength,
+        numArr, numArrLength)) {
+
+        randomInd = getRandomNumberInInterval(lastInd);
+        mathOperationsArr[randomInd] = '+';
+        randomInd = getRandomNumberInInterval(lastInd);
+        mathOperationsArr[randomInd] = '-';
+        randomInd = getRandomNumberInInterval(lastInd);
+        mathOperationsArr[randomInd] = ' ';
+        randomInd = getRandomNumberInInterval(lastInd);
+        mathOperationsArr[randomInd] = '*';
+        numArr[randomInd] = 2;
+        randomInd = getRandomNumberInInterval(lastInd);
+        mathOperationsArr[randomInd] = '/';
+        numArr[randomInd] = 2;
+    }
+   
+    for (size_t i = 1; i < numArrLength; i++) {
+        if (mathOperationsArr[i] == ' ') {
+            numArr[i] = 0;
+        }
+    }
 }
