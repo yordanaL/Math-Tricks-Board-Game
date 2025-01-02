@@ -3,6 +3,7 @@ using namespace std;
 
 const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
 const int NUMBER_OF_MATH_OPERATIONS = 5;
+const int MAX_DIGITS = 2;
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
@@ -41,6 +42,9 @@ void generateGameBoard(char*& mathOperationsArr,
     char**& mathOperationsGrid,
     int**& numGrid);
 
+void gridToArray(char** grid, size_t rows, size_t cols, char* arr);
+void gridToArray(int** grid, size_t rows, size_t cols, int* arr);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -71,21 +75,29 @@ int main() {
 
     int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
+    size_t gridLength = boardLength + 2;
+    size_t gridWidth = boardWidth + 2;
     char** mathOperationsGrid;
-    createGrid(mathOperationsGrid, (boardWidth + 2), (boardLength + 2));
+    createGrid(mathOperationsGrid, gridWidth, gridLength);
 
     int** numGrid;
-    createGrid(numGrid, (boardWidth + 2), (boardLength + 2));
+    createGrid(numGrid, gridWidth, gridLength);
 
     generateGameBoard(mathOperationsArr, mathOperationsArrLength,
         numArr, numArrLength, difficultyCoefficient,
         boardLength, boardWidth, mathOperationsGrid, numGrid);
+
+    size_t visualBoardLength = boardLength + MAX_DIGITS * boardLength + 2 * (boardLength + 1);
+    size_t visualBoardWidth = boardWidth + (boardLength + 1);
+    char** visualBoard;
+    createGrid(visualBoard, visualBoardWidth, visualBoardLength);
 
     delete[] mathOperationsArr;
     delete[] numArr;
 
     deleteGrid(mathOperationsGrid, (boardWidth + 2));
     deleteGrid(numGrid, (boardWidth + 2));
+    deleteGrid(visualBoard, visualBoardWidth);
 
     return 0;
 }
@@ -272,7 +284,7 @@ bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mat
     return (metAddition && metSubtraction && metZero && metMultiplicationWithTwo && metDivisionByTwo);
 }
 
-//Generating half of the board game to later use it to build the whole game board
+//Generating half of the game board to later use it to build the whole game board
 void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
     int*& numArr, size_t numArrLength, int difficultyCoefficient) {
     randomGenMathOperationsArray(mathOperationsArr, mathOperationsArrLength);
@@ -308,6 +320,7 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
     numArr[0] = 0;
 }
 
+//Building the whole game board
 void generateGameBoard(char*& mathOperationsArr,
     size_t mathOperationsArrLength,
     int*& numArr,
@@ -394,5 +407,31 @@ void generateGameBoard(char*& mathOperationsArr,
 
         int maxValue = 10 * difficultyCoefficient;
         numGrid[midRow][midCol] = getRandomNumberInInterval(maxValue);
+    }
+}
+
+//Functions to convert grid to array
+void gridToArray(char** grid, size_t rows, size_t cols, char* arr) {
+    size_t arrInd = 0;
+
+    size_t lastRowInd = rows - 2;
+    size_t lastColInd = cols - 2;
+    for (size_t i = 1; i < lastRowInd; i++) {
+        for (size_t j = 1; j < lastColInd; j++) {
+            arr[arrInd] = grid[i][j];
+            arrInd++;
+        }
+    }
+}
+void gridToArray(int** grid, size_t rows, size_t cols, int* arr) {
+    size_t arrInd = 0;
+
+    size_t lastRowInd = rows - 2;
+    size_t lastColInd = cols - 2;
+    for (size_t i = 1; i < lastRowInd; i++) {
+        for (size_t j = 1; j < lastColInd; j++) {
+            arr[arrInd] = grid[i][j];
+            arrInd++;
+        }
     }
 }
