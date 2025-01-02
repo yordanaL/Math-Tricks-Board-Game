@@ -179,9 +179,6 @@ void printGrid(const bool**& grid, size_t rows, size_t cols) {
 
 //Generating random math operation array to later use it to build the game board
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength) {
-    //A seed for the random number function
-    srand((unsigned)time(0));
-
     int mathOperationCode = 0; //0- "no sign"/"0"; 1 - "+"; 2 - "-"; 3 - "*"; 4 - "/"
     for (size_t i = 0; i < mathOperationsArrLength; i++) {
         mathOperationCode = getRandomNumberInInterval(NUMBER_OF_MATH_OPERATIONS);
@@ -206,13 +203,14 @@ void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperation
 
 //Generating random number array to later use it to build the game board
 void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoefficient) {
-    //A seed for the random number function
-    srand((unsigned)time(0));
-
     int maxValue = 10 * difficultyCoefficient;
 
     for (size_t i = 0; i < numArrLength; i++) {
         numArr[i] = getRandomNumberInInterval(maxValue);
+    }
+
+    for (size_t i = 0; i < numArrLength; i++) {
+        cout << numArr[i] << endl;
     }
 }
 
@@ -249,4 +247,5 @@ bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mat
 
     return (metAddition && metSubtraction && metZero && metMultiplicationWithTwo && metDivisionByTwo);
 }
+
 
