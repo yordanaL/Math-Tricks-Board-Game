@@ -60,6 +60,13 @@ int main() {
 
     int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
+    generateHalfBoardUpToTheRequirements(mathOperationsArr, mathOperationsArrLength,
+        numArr, numArrLength, difficultyCoefficient);
+
+    for (size_t i = 0; i < numArrLength; i++) {
+        cout << mathOperationsArr[i] << numArr[i] << endl;
+    }
+
     delete[] mathOperationsArr;
     delete[] numArr;
 
@@ -276,4 +283,8 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
             numArr[i] = 0;
         }
     }
+
+    //Setting the two starting points (0, 0) and (N, M)
+    mathOperationsArr[0] = ' ';
+    numArr[0] = 0;
 }
