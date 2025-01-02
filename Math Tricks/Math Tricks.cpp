@@ -31,6 +31,16 @@ bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mat
 void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
     int*& numArr, size_t numArrLength, int difficultyCoefficient);
 
+void generateGameBoard(char*& mathOperationsArr,
+    size_t mathOperationsArrLength,
+    int*& numArr,
+    size_t numArrLength,
+    int difficultyCoefficient,
+    size_t boardLength,
+    size_t boardWidth,
+    char**& mathOperationsGrid,
+    int**& numGrid);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -66,6 +76,10 @@ int main() {
 
     int** numGrid;
     createGrid(numGrid, (boardWidth + 2), (boardLength + 2));
+
+    generateGameBoard(mathOperationsArr, mathOperationsArrLength,
+        numArr, numArrLength, difficultyCoefficient,
+        boardLength, boardWidth, mathOperationsGrid, numGrid);
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -292,4 +306,93 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
     //Setting the two starting points (0, 0) and (N, M)
     mathOperationsArr[0] = ' ';
     numArr[0] = 0;
+}
+
+void generateGameBoard(char*& mathOperationsArr,
+    size_t mathOperationsArrLength,
+    int*& numArr,
+    size_t numArrLength,
+    int difficultyCoefficient,
+    size_t boardLength,
+    size_t boardWidth,
+    char**& mathOperationsGrid,
+    int**& numGrid) {
+    generateHalfBoardUpToTheRequirements(mathOperationsArr, mathOperationsArrLength,
+        numArr, numArrLength, difficultyCoefficient);
+
+    size_t gridFirstRowInd = 1;
+    size_t gridLastRowInd = boardWidth;
+    size_t gridFirstColInd = 1;
+    size_t gridLastColInd = boardLength;
+
+    size_t mathOperationsArrInd = 0;
+    for (size_t i = gridFirstRowInd; i <= gridLastRowInd; i++) {
+        for (size_t j = gridFirstColInd; j <= gridLastColInd; j++) {
+            mathOperationsGrid[i][j] = mathOperationsArr[mathOperationsArrInd];
+            mathOperationsArrInd++;
+
+            if (mathOperationsArrInd == mathOperationsArrLength) {
+                break;
+            }
+        }
+        if (mathOperationsArrInd == mathOperationsArrLength) {
+            break;
+        }
+    }
+
+    mathOperationsArrInd = 0;
+    for (size_t i = gridLastRowInd; i >= gridFirstRowInd; i--) {
+        for (size_t j = gridLastColInd; j >= gridFirstColInd; j--) {
+            mathOperationsGrid[i][j] = mathOperationsArr[mathOperationsArrInd];
+            mathOperationsArrInd++;
+
+            if (mathOperationsArrInd == mathOperationsArrLength) {
+                break;
+            }
+        }
+        if (mathOperationsArrInd == mathOperationsArrLength) {
+            break;
+        }
+    }
+
+    size_t numArrInd = 0;
+    for (size_t i = gridFirstRowInd; i <= gridLastRowInd; i++) {
+        for (size_t j = gridFirstColInd; j <= gridLastColInd; j++) {
+            numGrid[i][j] = numArr[numArrInd];
+            numArrInd++;
+
+            if (numArrInd == numArrLength) {
+                break;
+            }
+        }
+        if (numArrInd == numArrLength) {
+            break;
+        }
+    }
+
+    numArrInd = 0;
+    for (size_t i = gridLastRowInd; i >= gridFirstRowInd; i--) {
+        for (size_t j = gridLastColInd; j >= gridFirstColInd; j--) {
+            numGrid[i][j] = numArr[numArrInd];
+            numArrInd++;
+
+            if (numArrInd == numArrLength) {
+                break;
+            }
+        }
+        if (numArrInd == numArrLength) {
+            break;
+        }
+    }
+
+    if ((boardLength * boardWidth) % 2 != 0) {
+        int midRow = (boardWidth + 2) / 2;
+        int midCol = (boardLength + 2) / 2;
+
+        int randomMathOperationCode = getRandomNumberInInterval(NUMBER_OF_MATH_OPERATIONS);
+        mathOperationsGrid[midRow][midCol] = codeToMathOperation(randomMathOperationCode);
+
+        int maxValue = 10 * difficultyCoefficient;
+        numGrid[midRow][midCol] = getRandomNumberInInterval(maxValue);
+    }
 }
