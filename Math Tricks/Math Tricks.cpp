@@ -22,6 +22,7 @@ void printGrid(const int**& grid, size_t rows, size_t cols);
 void printGrid(const bool**& grid, size_t rows, size_t cols);
 
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength);
+char codeToMathOperation(int mathOperationCode);
 void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoefficient);
 
 bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
@@ -60,15 +61,17 @@ int main() {
 
     int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
-    generateHalfBoardUpToTheRequirements(mathOperationsArr, mathOperationsArrLength,
-        numArr, numArrLength, difficultyCoefficient);
+    char** mathOperationsGrid;
+    createGrid(mathOperationsGrid, (boardWidth + 2), (boardLength + 2));
 
-    for (size_t i = 0; i < numArrLength; i++) {
-        cout << mathOperationsArr[i] << numArr[i] << endl;
-    }
+    int** numGrid;
+    createGrid(numGrid, (boardWidth + 2), (boardLength + 2));
 
     delete[] mathOperationsArr;
     delete[] numArr;
+
+    deleteGrid(mathOperationsGrid, (boardWidth + 2));
+    deleteGrid(numGrid, (boardWidth + 2));
 
     return 0;
 }
@@ -187,26 +190,28 @@ void printGrid(const bool**& grid, size_t rows, size_t cols) {
 }
 
 //Generating random math operation array to later use it to build the game board
+char codeToMathOperation(int mathOperationCode) {
+    if (mathOperationCode == 1) {
+        return ' ';
+    }
+    else if (mathOperationCode == 2) {
+        return '+';
+    }
+    else if (mathOperationCode == 3) {
+        return '-';
+    }
+    else if (mathOperationCode == 4) {
+        return '*';
+    }
+    else if (mathOperationCode == 5) {
+        return '/';
+    }
+}
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength) {
     int mathOperationCode = 1; //1- "no sign"/"0"; 2 - "+"; 3 - "-"; 4 - "*"; 5 - "/"
     for (size_t i = 0; i < mathOperationsArrLength; i++) {
         mathOperationCode = getRandomNumberInInterval(NUMBER_OF_MATH_OPERATIONS);
-
-        if (mathOperationCode == 1) {
-            mathOperationsArr[i] = ' ';
-        }
-        else if (mathOperationCode == 2) {
-            mathOperationsArr[i] = '+';
-        }
-        else if (mathOperationCode == 3) {
-            mathOperationsArr[i] = '-';
-        }
-        else if (mathOperationCode == 4) {
-            mathOperationsArr[i] = '*';
-        }
-        else if (mathOperationCode == 5) {
-            mathOperationsArr[i] = '/';
-        }
+        mathOperationsArr[i] = codeToMathOperation(mathOperationCode);
     }
 }
 
