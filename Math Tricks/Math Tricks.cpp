@@ -45,6 +45,8 @@ void generateGameBoard(char*& mathOperationsArr,
 void gridToArray(char** grid, size_t rows, size_t cols, char* arr);
 void gridToArray(int** grid, size_t rows, size_t cols, int* arr);
 
+char digitToChar(int digit);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -435,3 +437,9 @@ void gridToArray(int** grid, size_t rows, size_t cols, int* arr) {
         }
     }
 }
+
+//Function to convert digit to char
+char digitToChar(int digit) {
+    return (digit + '0');
+}
+
