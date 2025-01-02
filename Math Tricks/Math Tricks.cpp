@@ -57,6 +57,13 @@ int main() {
 
     int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
+    generateHalfBoardUpToTheRequirements(mathOperationsArr, mathOperationsArrLength,
+        numArr, numArrLength, difficultyCoefficient);
+
+    for (size_t i = 0; i < numArrLength; i++) {
+        cout << mathOperationsArr[i] << numArr[i] << endl;
+    }
+
     delete[] mathOperationsArr;
     delete[] numArr;
 
@@ -176,26 +183,25 @@ void printGrid(const bool**& grid, size_t rows, size_t cols) {
     }
 }
 
-
 //Generating random math operation array to later use it to build the game board
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength) {
-    int mathOperationCode = 0; //0- "no sign"/"0"; 1 - "+"; 2 - "-"; 3 - "*"; 4 - "/"
+    int mathOperationCode = 1; //1- "no sign"/"0"; 2 - "+"; 3 - "-"; 4 - "*"; 5 - "/"
     for (size_t i = 0; i < mathOperationsArrLength; i++) {
         mathOperationCode = getRandomNumberInInterval(NUMBER_OF_MATH_OPERATIONS);
 
-        if (mathOperationCode == 0) {
+        if (mathOperationCode == 1) {
             mathOperationsArr[i] = ' ';
         }
-        else if (mathOperationCode == 1) {
+        else if (mathOperationCode == 2) {
             mathOperationsArr[i] = '+';
         }
-        else if (mathOperationCode == 2) {
+        else if (mathOperationCode == 3) {
             mathOperationsArr[i] = '-';
         }
-        else if (mathOperationCode == 3) {
+        else if (mathOperationCode == 4) {
             mathOperationsArr[i] = '*';
         }
-        else if (mathOperationCode == 4) {
+        else if (mathOperationCode == 5) {
             mathOperationsArr[i] = '/';
         }
     }
@@ -207,10 +213,6 @@ void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoeffici
 
     for (size_t i = 0; i < numArrLength; i++) {
         numArr[i] = getRandomNumberInInterval(maxValue);
-    }
-
-    for (size_t i = 0; i < numArrLength; i++) {
-        cout << numArr[i] << endl;
     }
 }
 
@@ -247,5 +249,3 @@ bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mat
 
     return (metAddition && metSubtraction && metZero && metMultiplicationWithTwo && metDivisionByTwo);
 }
-
-
