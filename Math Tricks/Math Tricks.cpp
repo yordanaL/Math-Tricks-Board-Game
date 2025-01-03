@@ -48,6 +48,8 @@ void gridToArray(int** grid, size_t rows, size_t cols, int* arr);
 
 char digitToChar(int digit);
 
+void initialInitializationOfVisualBoard(char**& visualBoard, size_t visualBoardWidth, size_t visualBoardLength);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -70,6 +72,7 @@ int main() {
         cin >> boardWidth;
     }
 
+    //Generating game board
     size_t mathOperationsArrLength = boardLength * boardWidth / 2;
     char* mathOperationsArr = new char[mathOperationsArrLength];
 
@@ -80,10 +83,10 @@ int main() {
 
     size_t gridLength = boardLength + 2;
     size_t gridWidth = boardWidth + 2;
-    char** mathOperationsGrid;
+    char** mathOperationsGrid = nullptr;
     createGrid(mathOperationsGrid, gridWidth, gridLength);
 
-    int** numGrid;
+    int** numGrid = nullptr;
     createGrid(numGrid, gridWidth, gridLength);
 
     generateGameBoard(mathOperationsArr, mathOperationsArrLength,
@@ -92,14 +95,15 @@ int main() {
 
     size_t visualBoardLength = boardLength + MAX_DIGITS * boardLength + MARGIN * (boardLength + 1);
     size_t visualBoardWidth = boardWidth + (boardLength + 1);
-    char** visualBoard;
+    char** visualBoard = nullptr;
     createGrid(visualBoard, visualBoardWidth, visualBoardLength);
+    initialInitializationOfVisualBoard(visualBoard, visualBoardWidth, visualBoardLength);
 
     delete[] mathOperationsArr;
     delete[] numArr;
 
-    deleteGrid(mathOperationsGrid, (boardWidth + 2));
-    deleteGrid(numGrid, (boardWidth + 2));
+    deleteGrid(mathOperationsGrid, gridWidth);
+    deleteGrid(numGrid, gridWidth);
     deleteGrid(visualBoard, visualBoardWidth);
 
     return 0;
@@ -442,4 +446,13 @@ void gridToArray(int** grid, size_t rows, size_t cols, int* arr) {
 //Function to convert digit to char
 char digitToChar(int digit) {
     return (digit + '0');
+}
+
+//Initialize an empty visual board
+void initialInitializationOfVisualBoard(char**& visualBoard, size_t visualBoardWidth, size_t visualBoardLength) {
+    for (size_t i = 0; i < visualBoardWidth; i++) {
+        for (size_t j = 0; j < visualBoardLength; j++) {
+            visualBoard[i][j] = ' ';
+        }
+    }
 }
