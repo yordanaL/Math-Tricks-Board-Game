@@ -50,6 +50,10 @@ char digitToChar(int digit);
 
 void initialInitializationOfVisualBoard(char**& visualBoard, size_t visualBoardWidth, size_t visualBoardLength);
 
+void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visualBoardWidth,
+    char** mathOperationsGrid, int** numGrid, size_t gridLength, size_t gridWidth,
+    size_t boardLength, size_t boardWidth);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -98,6 +102,12 @@ int main() {
     char** visualBoard = nullptr;
     createGrid(visualBoard, visualBoardWidth, visualBoardLength);
     initialInitializationOfVisualBoard(visualBoard, visualBoardWidth, visualBoardLength);
+    buildVisualBoard(visualBoard, visualBoardLength, visualBoardWidth,
+        mathOperationsGrid, numGrid, gridLength, gridWidth,
+        boardLength, boardWidth);
+
+    clearConsole();
+    printGrid(visualBoard, visualBoardWidth, visualBoardLength);
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -455,4 +465,58 @@ void initialInitializationOfVisualBoard(char**& visualBoard, size_t visualBoardW
             visualBoard[i][j] = ' ';
         }
     }
+}
+
+//The already generated boards will construct the board that will be print in the console
+void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visualBoardWidth,
+    char** mathOperationsGrid, int** numGrid, size_t gridLength, size_t gridWidth,
+    size_t boardLength, size_t boardWidth) {
+    size_t firstRowInd = 1;
+    size_t firstColInd = 2;
+
+    size_t arrayLength = boardLength * boardWidth;
+    char* mathOperations = new char[arrayLength];
+    gridToArray(mathOperationsGrid, gridWidth, gridLength, mathOperations);
+    int* numbers = new int[arrayLength];
+    gridToArray(numGrid, gridWidth, gridLength, numbers);
+
+    size_t mathOperationsInd = 0;
+    size_t numbersInd = 0;
+    int currentNum = 0;
+    int ones = 0;
+    int tens = 0;
+    int hundreds = 0;
+    for (size_t i = firstRowInd; i < visualBoardWidth; ) {
+        for (size_t j = firstColInd; j < visualBoardLength; ) {
+            visualBoard[i][j] = mathOperations[mathOperationsInd];
+            j++;
+
+            currentNum = numbers[numbersInd];
+            ones = currentNum % 10;
+            tens = (currentNum / 10) % 10;
+            hundreds = currentNum / 100;
+
+            visualBoard[i][j] = digitToChar(hundreds);
+            j++;
+            visualBoard[i][j] = digitToChar(tens);
+            j++;
+            visualBoard[i][j] = digitToChar(ones);
+            j += MARGIN + 1;
+
+            mathOperationsInd++;
+            numbersInd++;
+
+            if (numbersInd == arrayLength) {
+                break;
+            }
+        }
+        if (numbersInd == arrayLength) {
+            break;
+        }
+
+        i += MARGIN;
+    }
+
+    delete[] mathOperations;
+    delete[] numbers;
 }
