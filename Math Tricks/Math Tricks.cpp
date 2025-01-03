@@ -3,7 +3,8 @@ using namespace std;
 
 const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
 const int NUMBER_OF_MATH_OPERATIONS = 5;
-const int MAX_DIGITS = 2;
+const int MAX_DIGITS = 3;
+const int MARGIN = 2;
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
@@ -18,9 +19,9 @@ void deleteGrid(char**& grid, size_t rows);
 void deleteGrid(int**& grid, size_t rows);
 void deleteGrid(bool**& grid, size_t rows);
 
-void printGrid(const char**& grid, size_t rows, size_t cols);
-void printGrid(const int**& grid, size_t rows, size_t cols);
-void printGrid(const bool**& grid, size_t rows, size_t cols);
+void printGrid(char** grid, size_t rows, size_t cols);
+void printGrid(int** grid, size_t rows, size_t cols);
+void printGrid(bool** grid, size_t rows, size_t cols);
 
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength);
 char codeToMathOperation(int mathOperationCode);
@@ -89,7 +90,7 @@ int main() {
         numArr, numArrLength, difficultyCoefficient,
         boardLength, boardWidth, mathOperationsGrid, numGrid);
 
-    size_t visualBoardLength = boardLength + MAX_DIGITS * boardLength + 2 * (boardLength + 1);
+    size_t visualBoardLength = boardLength + MAX_DIGITS * boardLength + MARGIN * (boardLength + 1);
     size_t visualBoardWidth = boardWidth + (boardLength + 1);
     char** visualBoard;
     createGrid(visualBoard, visualBoardWidth, visualBoardLength);
@@ -190,7 +191,7 @@ void deleteGrid(bool**& grid, size_t rows) {
 }
 
 //Functions to print char, int, bool grids 
-void printGrid(const char**& grid, size_t rows, size_t cols) {
+void printGrid(char** grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
@@ -199,7 +200,7 @@ void printGrid(const char**& grid, size_t rows, size_t cols) {
     }
 }
 
-void printGrid(const int**& grid, size_t rows, size_t cols) {
+void printGrid(int** grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
@@ -208,7 +209,7 @@ void printGrid(const int**& grid, size_t rows, size_t cols) {
     }
 }
 
-void printGrid(const bool**& grid, size_t rows, size_t cols) {
+void printGrid(bool** grid, size_t rows, size_t cols) {
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
             cout << grid[i][j] << " ";
@@ -293,7 +294,7 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
     randomGenNumArray(numArr, numArrLength, difficultyCoefficient);
 
     size_t randomInd = 0;
-    int lastInd = mathOperationsArrLength - 1;
+    int lastInd = (int)mathOperationsArrLength - 1;
     while (!isHalfBoardFulfillingBoardRequirements(mathOperationsArr, mathOperationsArrLength,
         numArr, numArrLength)) {
 
@@ -418,8 +419,8 @@ void gridToArray(char** grid, size_t rows, size_t cols, char* arr) {
 
     size_t lastRowInd = rows - 2;
     size_t lastColInd = cols - 2;
-    for (size_t i = 1; i < lastRowInd; i++) {
-        for (size_t j = 1; j < lastColInd; j++) {
+    for (size_t i = 1; i <= lastRowInd; i++) {
+        for (size_t j = 1; j <= lastColInd; j++) {
             arr[arrInd] = grid[i][j];
             arrInd++;
         }
@@ -430,8 +431,8 @@ void gridToArray(int** grid, size_t rows, size_t cols, int* arr) {
 
     size_t lastRowInd = rows - 2;
     size_t lastColInd = cols - 2;
-    for (size_t i = 1; i < lastRowInd; i++) {
-        for (size_t j = 1; j < lastColInd; j++) {
+    for (size_t i = 1; i <= lastRowInd; i++) {
+        for (size_t j = 1; j <= lastColInd; j++) {
             arr[arrInd] = grid[i][j];
             arrInd++;
         }
@@ -442,4 +443,3 @@ void gridToArray(int** grid, size_t rows, size_t cols, int* arr) {
 char digitToChar(int digit) {
     return (digit + '0');
 }
-
