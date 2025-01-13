@@ -66,6 +66,9 @@ void scoreUpdate(double& score, int coordinateX, int coordinateY,
 
 void colorSet(int color);
 
+void printGameBoard(char** mathOperationsGrid, int** numGrid,
+    size_t gridLength, size_t gridWidth);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -119,7 +122,8 @@ int main() {
         boardLength, boardWidth);
 
     clearConsole();
-    printGrid(visualBoard, visualBoardWidth, visualBoardLength);
+   // printGrid(visualBoard, visualBoardWidth, visualBoardLength);
+    printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth);
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -630,4 +634,22 @@ void colorSet(int color) {
     HANDLE  hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, color);
+}
+
+void printGameBoard(char** mathOperationsGrid, int** numGrid,
+    size_t gridLength, size_t gridWidth) {
+    for (size_t i = 1; i < gridWidth-1; i++) {
+        for (size_t j = 1; j < gridLength-1; j++) {
+            if (numGrid[i][j] < 10) {
+                cout << mathOperationsGrid[i][j] << "  " << numGrid[i][j] << "\t";
+            }
+            else if (numGrid[i][j] >= 10) {
+                cout << mathOperationsGrid[i][j] << " " << numGrid[i][j] << "\t";
+            }
+            else {
+                cout << mathOperationsGrid[i][j] << numGrid[i][j] << "\t";
+            }
+        }
+        cout << endl << endl;
+    }
 }
