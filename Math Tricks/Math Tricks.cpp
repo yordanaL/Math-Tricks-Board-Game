@@ -29,10 +29,8 @@ void randomGenNumArray(int*& numArr, size_t numArrLength, int difficultyCoeffici
 
 bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
     int*& numArr, size_t numArrLength);
-
 void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathOperationsArrLength,
     int*& numArr, size_t numArrLength, int difficultyCoefficient);
-
 void generateGameBoard(char*& mathOperationsArr,
     size_t mathOperationsArrLength,
     int*& numArr,
@@ -53,6 +51,8 @@ void initialInitializationOfVisualBoard(char**& visualBoard, size_t visualBoardW
 void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visualBoardWidth,
     char** mathOperationsGrid, int** numGrid, size_t gridLength, size_t gridWidth,
     size_t boardLength, size_t boardWidth);
+
+bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenCoordinates);
 
 int main() {
     //A seed for the random number function
@@ -519,4 +519,26 @@ void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visu
 
     delete[] mathOperations;
     delete[] numbers;
+}
+
+//Function to check whether a player is possible to move to given coordinates 
+bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenCoordinates) {
+    if (takenCoordinates[newY][newX] != 0) {
+        return false;
+    }
+    
+    //During every move a player have to move from their current coordinates
+    if (newX == currentX && newX == currentX) {
+        return false;
+    }
+
+    if (!(newX == currentX + 1 || newX == currentX - 1)) {
+        return false;
+    }
+
+    if (!(newY == currentY + 1 || newY == currentY - 1)) {
+        return false;
+    }
+
+    return true;
 }
