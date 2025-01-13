@@ -534,7 +534,7 @@ bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenC
     }
     
     //During every move a player have to move from their current coordinates
-    if (newX == currentX && newX == currentX) {
+    if (newX == currentX && newY == currentY) {
         return false;
     }
 
