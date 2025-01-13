@@ -60,6 +60,9 @@ bool isGameOver(int playerOneX, int playerOneY,
     int playerTwoX, int playerTwoY,
     int** takenCoordinates, size_t gridLength, size_t gridWidth);
 
+void scoreUpdate(double& score, int coordinateX, int coordinateY,
+    char** mathOperationsGrid, int** numGrid);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -594,4 +597,26 @@ bool isGameOver(int playerOneX, int playerOneY,
     }
 
     return false;
+}
+
+void scoreUpdate(double& score, int coordinateX, int coordinateY,
+    char** mathOperationsGrid, int** numGrid) {
+
+    switch (mathOperationsGrid[coordinateY][coordinateX])
+    {
+    case ' ': score *= 0;
+        break;
+    case '+': score += numGrid[coordinateY][coordinateX];
+        break;
+    case '-': score -= numGrid[coordinateY][coordinateX];
+        break;
+    case '*': score *= numGrid[coordinateY][coordinateX];
+        break;
+    case '/': score /= numGrid[coordinateY][coordinateX];
+        break;
+    }
+
+    if (score<0) {
+        score = 0;
+    }
 }
