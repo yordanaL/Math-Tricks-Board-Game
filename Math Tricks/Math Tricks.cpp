@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 using namespace std;
 
 const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
@@ -62,6 +63,8 @@ bool isGameOver(int playerOneX, int playerOneY,
 
 void scoreUpdate(double& score, int coordinateX, int coordinateY,
     char** mathOperationsGrid, int** numGrid);
+
+void colorSet(int color);
 
 int main() {
     //A seed for the random number function
@@ -599,6 +602,7 @@ bool isGameOver(int playerOneX, int playerOneY,
     return false;
 }
 
+//Function to update the score after after every move
 void scoreUpdate(double& score, int coordinateX, int coordinateY,
     char** mathOperationsGrid, int** numGrid) {
 
@@ -619,4 +623,11 @@ void scoreUpdate(double& score, int coordinateX, int coordinateY,
     if (score<0) {
         score = 0;
     }
+}
+
+//Function to color the text and the background in the console
+void colorSet(int color) {
+    HANDLE  hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, color);
 }
