@@ -54,6 +54,8 @@ void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visu
 
 bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenCoordinates);
 
+int playerOnMove(int totalMoves);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -541,4 +543,15 @@ bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenC
     }
 
     return true;
+}
+
+
+//Function to switch turns 
+int playerOnMove(int totalMoves) {
+    if (totalMoves % 2 == 0) {
+        return 1;
+    }
+    else {
+        return 2;
+    }
 }
