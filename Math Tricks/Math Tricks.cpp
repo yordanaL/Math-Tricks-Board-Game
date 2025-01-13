@@ -56,6 +56,10 @@ bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenC
 
 int playerOnMove(int totalMoves);
 
+bool isGameOver(int playerOneX, int playerOneY,
+    int playerTwoX, int playerTwoY,
+    int** takenCoordinates, size_t gridLength, size_t gridWidth);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -545,7 +549,6 @@ bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenC
     return true;
 }
 
-
 //Function to switch turns 
 int playerOnMove(int totalMoves) {
     if (totalMoves % 2 == 0) {
@@ -554,4 +557,41 @@ int playerOnMove(int totalMoves) {
     else {
         return 2;
     }
+}
+
+//Function to check if the game can continue
+bool isGameOver(int playerOneX, int playerOneY,
+    int playerTwoX, int playerTwoY,
+    int** takenCoordinates, size_t gridLength, size_t gridWidth) {
+
+    bool isThereUnvisitedNeighbour = false;
+    for (size_t i = playerOneY - 1; i <= playerOneY + 1; i++) {
+        for (size_t j = playerOneX - 1; j <= playerOneY + 1; j++) {
+            if (takenCoordinates[i][j] == 0)
+                isThereUnvisitedNeighbour = true;
+        }
+    }
+    if (isThereUnvisitedNeighbour = false) {
+        return false;
+    }
+
+    isThereUnvisitedNeighbour = false;
+    for (size_t i = playerTwoY - 1; i <= playerTwoY + 1; i++) {
+        for (size_t j = playerTwoX - 1; j <= playerTwoY + 1; j++) {
+            if (takenCoordinates[i][j] == 0)
+                isThereUnvisitedNeighbour = true;
+        }
+    }
+    if (isThereUnvisitedNeighbour = true) {
+        return false;
+    }
+
+    for (size_t i = 0; i < gridLength; i++) {
+        for (size_t j = 0; j < gridWidth; j++) {
+            if (takenCoordinates[i][j] == 0)
+                return true;
+        }
+    }
+
+    return false;
 }
