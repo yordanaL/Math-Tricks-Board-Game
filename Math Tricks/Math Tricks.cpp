@@ -148,7 +148,7 @@ int main() {
     initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
         boardWidth, boardLength);
 
-    printGrid(visitedCoordinates, gridWidth, gridWidth);
+    //printGrid(visitedCoordinates, gridWidth, gridWidth);
 
     //while (1) {//gameover
         if (playerOnMove(totalMoves) == 1) {
@@ -680,8 +680,20 @@ void colorSet(int color) {
 
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
     size_t gridLength, size_t gridWidth) {
-    for (size_t i = 1; i < gridWidth-1; i++) {
-        for (size_t j = 1; j < gridLength-1; j++) {
+    int firstLoopStop = gridWidth - 1;
+    int secondLoopStop = gridLength - 1;
+
+    for (size_t i = 0; i < firstLoopStop; i++) {
+        for (size_t j = 0; j < secondLoopStop; j++) {
+            if (i == 0) {
+                cout << j << '\t'<<"   ";
+                continue;
+            }
+            if (j == 0) {
+                cout << i << '\t';
+                continue;
+            }
+
             if (numGrid[i][j] < 10) {
                 cout << mathOperationsGrid[i][j] << "  " << numGrid[i][j] << "\t";
             }
@@ -691,6 +703,9 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
             else {
                 cout << mathOperationsGrid[i][j] << numGrid[i][j] << "\t";
             }
+        }
+        if (i == 0) {
+            cout << endl << endl;
         }
         cout << endl << endl;
     }
@@ -712,13 +727,16 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
         }
     }
 
+    int lastCol = gridLength - 1;
     for (size_t i = 0; i < gridWidth; i++) {
         visitedCoordinates[i][0] = 3;
-        visitedCoordinates[i][gridLength - 1] = 3;
+        visitedCoordinates[i][lastCol] = 3;
     }
+
+    int lastRow = gridWidth - 1;
     for (size_t j = 0; j < gridLength; j++) {
         visitedCoordinates[0][j] = 3;
-        visitedCoordinates[gridWidth - 1][j] = 3;
+        visitedCoordinates[lastRow][j] = 3;
     }
 
     visitedCoordinates[1][1] = 1;
