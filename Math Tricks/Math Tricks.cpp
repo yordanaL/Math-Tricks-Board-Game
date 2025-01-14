@@ -69,6 +69,11 @@ void colorSet(int color);
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
     size_t gridLength, size_t gridWidth);
 
+void getNewValidMove(int playerX, int playerY);
+
+void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
+    size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
+
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
@@ -122,8 +127,44 @@ int main() {
         boardLength, boardWidth);
 
     clearConsole();
-   // printGrid(visualBoard, visualBoardWidth, visualBoardLength);
-    printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth);
+    //printGrid(visualBoard, visualBoardWidth, visualBoardLength);
+
+    //Game moves
+    int playerOneX = 1;
+    int playerOneY = 1;
+    double playerOneScore = 0;
+
+    int playerTwoX = boardLength;
+    int playerTwoY = boardWidth;
+    double playerTwoScore = 0;
+
+    int newX = 0;
+    int newY = 0;
+
+    int totalMoves = 0;
+
+    int** visitedCoordinates = nullptr;
+    createGrid(visitedCoordinates, gridWidth, gridLength);
+    initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
+        boardWidth, boardLength);
+
+    printGrid(visitedCoordinates, gridWidth, gridWidth);
+
+    //while (1) {//gameover
+        if (playerOnMove(totalMoves) == 1) {
+            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth);
+            cout << endl;
+            cout << "Score of player one: " << playerOneScore << '\t'
+                << '\t' << "Score of player two: " << playerTwoScore;
+            cout << endl;
+
+            cout << endl;
+            cout << "Enter next move: ";
+            cout << endl;
+        }
+        else {
+        }
+   // }
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -131,6 +172,7 @@ int main() {
     deleteGrid(mathOperationsGrid, gridWidth);
     deleteGrid(numGrid, gridWidth);
     deleteGrid(visualBoard, visualBoardWidth);
+    deleteGrid(visitedCoordinates, gridWidth);
 
     return 0;
 }
@@ -652,4 +694,33 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
         }
         cout << endl << endl;
     }
+}
+
+void getNewValidMove(int playerX, int playerY) {
+    int newX = 0;
+    int newY = 0;
+
+    cout << "Enter next move: ";
+    while (isMovePossible);
+}
+
+void initializeVisitedCoordinatesBoard(int** visitedCoordinates, 
+    size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength) {
+    for (size_t i = 0; i < gridWidth; i++) {
+        for (size_t j = 0; j < gridLength; j++) {
+            visitedCoordinates[i][j] = 0;
+        }
+    }
+
+    for (size_t i = 0; i < gridWidth; i++) {
+        visitedCoordinates[i][0] = 3;
+        visitedCoordinates[i][gridLength - 1] = 3;
+    }
+    for (size_t j = 0; j < gridLength; j++) {
+        visitedCoordinates[0][j] = 3;
+        visitedCoordinates[gridWidth - 1][j] = 3;
+    }
+
+    visitedCoordinates[1][1] = 1;
+    visitedCoordinates[boardWidth][boardLength] = 2;
 }
