@@ -11,7 +11,9 @@ const int BLACK_TEXT_WHITE_BACKGROUND = 240;//0 + 15*16
 const int WHITE_TEXT_BLACK_BACKGROUND = 15;//15 + 0*16
 const int GREY_TEXT_BLACK_BACKGROUND = 7;//7 + 0*16
 const int WHITE_TEXT_BLUE_BACKGROUND = 63;//15 + 3*16
+const int YELLOW_TEXT_BLUE_BACKGROUND = 62;//14+ 3*16
 const int WHITE_TEXT_GREEN_BACKGROUND = 47;//15 + 2*16
+const int YELLOW_TEXT_GREEN_BACKGROUND = 46;//14 + 2*16
 const int CORAL_TEXT_WHITE_BACKGROUND = 252;//12 + 15*16
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
@@ -171,16 +173,16 @@ int main() {
                 << '\t' << "Score of player two: " << playerTwoScore;
             cout << endl;
 
+            visitedCoordinates[playerOneY][playerOneX] = 1;
+
             cout << endl;
             cout << "Player One's turn." << endl;
             getNewValidMove(playerOneX, playerOneY, visitedCoordinates);
-            visitedCoordinates[playerOneY][playerOneX] = 1;
+            visitedCoordinates[playerOneY][playerOneX] = 11;
 
             clearConsole();
             setColor(WHITE_TEXT_BLACK_BACKGROUND);
             scoreUpdate(playerOneScore, playerOneX, playerOneY, mathOperationsGrid, numGrid);
-            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
-            cout << playerOneScore;
         }
         else {
             printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
@@ -192,15 +194,16 @@ int main() {
                 << '\t' << "Score of player two: " << playerTwoScore;
             cout << endl;
 
+            visitedCoordinates[playerTwoY][playerTwoX] = 2;
+
             cout << endl;
             cout << "Player Two's turn." << endl;
             getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates);
-            visitedCoordinates[playerTwoY][playerTwoX] = 2;
+            visitedCoordinates[playerTwoY][playerTwoX] = 22;
 
             clearConsole();
             setColor(WHITE_TEXT_BLACK_BACKGROUND);
             scoreUpdate(playerTwoScore, playerTwoX, playerTwoY, mathOperationsGrid, numGrid);
-            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
         }
 
         totalMoves++;
@@ -743,8 +746,14 @@ void colorCell(int** visitedCoordinates, int i, int j) {
     else if (visitedCoordinates[i][j] == 1) {
         setColor(WHITE_TEXT_BLUE_BACKGROUND);
     }
+    else if (visitedCoordinates[i][j] == 11) {
+        setColor(YELLOW_TEXT_BLUE_BACKGROUND);
+    }
     else if (visitedCoordinates[i][j] == 2) {
         setColor(WHITE_TEXT_GREEN_BACKGROUND);
+    }
+    else if (visitedCoordinates[i][j] == 22) {
+        setColor(YELLOW_TEXT_GREEN_BACKGROUND);
     }
 }
 
@@ -807,8 +816,8 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
         visitedCoordinates[lastRow][j] = 3;
     }
 
-    visitedCoordinates[1][1] = 1;
-    visitedCoordinates[boardWidth][boardLength] = 2;
+    visitedCoordinates[1][1] = 11;
+    visitedCoordinates[boardWidth][boardLength] = 22;
 }
 
 void getNewValidMove(int& playerX, int& playerY, int** visitedCoordinates) {
