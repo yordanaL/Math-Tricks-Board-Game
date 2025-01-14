@@ -12,6 +12,7 @@ const int WHITE_TEXT_BLACK_BACKGROUND = 15;//15 + 0*16
 const int GREY_TEXT_BLACK_BACKGROUND = 7;//7 + 0*16
 const int WHITE_TEXT_BLUE_BACKGROUND = 63;//15 + 3*16
 const int WHITE_TEXT_GREEN_BACKGROUND = 47;//15 + 2*16
+const int CORAL_TEXT_WHITE_BACKGROUND = 252;//12 + 15*16
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
@@ -159,7 +160,7 @@ int main() {
     //printGrid(visitedCoordinates, gridWidth, gridWidth);
 
     while (!isGameOver(playerOneX, playerOneY, playerTwoX,
-        playerTwoY,visitedCoordinates, gridLength,gridLength)) {
+        playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
         if (playerOnMove(totalMoves) == 1) {
             printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
             cout << endl;
@@ -171,6 +172,7 @@ int main() {
             cout << endl;
 
             cout << endl;
+            cout << "Player One's turn." << endl;
             getNewValidMove(playerOneX, playerOneY, visitedCoordinates);
             visitedCoordinates[playerOneY][playerOneX] = 1;
 
@@ -178,6 +180,7 @@ int main() {
             setColor(WHITE_TEXT_BLACK_BACKGROUND);
             scoreUpdate(playerOneScore, playerOneX, playerOneY, mathOperationsGrid, numGrid);
             printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+            cout << playerOneScore;
         }
         else {
             printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
@@ -190,6 +193,7 @@ int main() {
             cout << endl;
 
             cout << endl;
+            cout << "Player Two's turn." << endl;
             getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates);
             visitedCoordinates[playerTwoY][playerTwoX] = 2;
 
@@ -203,7 +207,21 @@ int main() {
         clearConsole();
     }
 
-        setColor(GREY_TEXT_BLACK_BACKGROUND);
+    printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+    cout << endl << endl;
+    
+    setColor(CORAL_TEXT_WHITE_BACKGROUND);
+    if (playerOneScore > playerTwoScore) {
+        cout << "CONGRATULATIONS PLAYER ONE ON YOUR VICTORY!" << endl;
+    }
+    else if (playerOneScore < playerTwoScore) {
+        cout << "CONGRATULATIONS PLAYER TWO ON YOUR VICTORY!" << endl;
+    }
+    else {
+        cout << "TIE!" << endl;
+    }
+
+    setColor(GREY_TEXT_BLACK_BACKGROUND);
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -657,34 +675,34 @@ bool isGameOver(int playerOneX, int playerOneY,
 
     bool isThereUnvisitedNeighbour = false;
     for (size_t i = playerOneY - 1; i <= playerOneY + 1; i++) {
-        for (size_t j = playerOneX - 1; j <= playerOneY + 1; j++) {
+        for (size_t j = playerOneX - 1; j <= playerOneX + 1; j++) {
             if (takenCoordinates[i][j] == 0)
                 isThereUnvisitedNeighbour = true;
         }
     }
-    if (isThereUnvisitedNeighbour = false) {
-        return false;
+    if (isThereUnvisitedNeighbour == false) {
+        return true;
     }
 
     isThereUnvisitedNeighbour = false;
     for (size_t i = playerTwoY - 1; i <= playerTwoY + 1; i++) {
-        for (size_t j = playerTwoX - 1; j <= playerTwoY + 1; j++) {
+        for (size_t j = playerTwoX - 1; j <= playerTwoX+ 1; j++) {
             if (takenCoordinates[i][j] == 0)
                 isThereUnvisitedNeighbour = true;
         }
     }
-    if (isThereUnvisitedNeighbour = true) {
-        return false;
+    if (isThereUnvisitedNeighbour == false) {
+        return true;
     }
 
     for (size_t i = 0; i < gridLength; i++) {
         for (size_t j = 0; j < gridWidth; j++) {
             if (takenCoordinates[i][j] == 0)
-                return true;
+                return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 //Function to update the score after after every move
@@ -705,7 +723,7 @@ void scoreUpdate(double& score, int coordinateX, int coordinateY,
         break;
     }
 
-    if (score<0) {
+    if (score < 0) {
         score = 0;
     }
 }
@@ -717,6 +735,7 @@ void setColor(int color) {
     SetConsoleTextAttribute(hConsole, color);
 }
 
+//Function to color only one cell on the board
 void colorCell(int** visitedCoordinates, int i, int j) {
     if (visitedCoordinates[i][j] == 0) {
         setColor(BLACK_TEXT_WHITE_BACKGROUND);
