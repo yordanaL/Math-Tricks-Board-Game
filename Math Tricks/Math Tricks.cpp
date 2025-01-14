@@ -7,6 +7,12 @@ const int NUMBER_OF_MATH_OPERATIONS = 5;
 const int MAX_DIGITS = 3;
 const int MARGIN = 2;
 
+const int BLACK_TEXT_WHITE_BACKGROUND = 240;//0 + 15*16
+const int WHITE_TEXT_BLACK_BACKGROUND = 15;//15 + 0*16
+const int GREY_TEXT_BLACK_BACKGROUND = 7;//7 + 0*16
+const int WHITE_TEXT_BLUE_BACKGROUND = 63;//15 + 3*16
+const int WHITE_TEXT_GREEN_BACKGROUND = 47;//15 + 2*16
+
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth);
@@ -64,10 +70,12 @@ bool isGameOver(int playerOneX, int playerOneY,
 void scoreUpdate(double& score, int coordinateX, int coordinateY,
     char** mathOperationsGrid, int** numGrid);
 
-void colorSet(int color);
+void setColor(int color);
+
+void colorCell(int** visitedCoordinates, int i, int j);
 
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
-    size_t gridLength, size_t gridWidth);
+    size_t gridLength, size_t gridWidth, int** visitedCoordinates);
 
 void getNewValidMove(int playerX, int playerY);
 
@@ -134,8 +142,8 @@ int main() {
     int playerOneY = 1;
     double playerOneScore = 0;
 
-    int playerTwoX = boardLength;
-    int playerTwoY = boardWidth;
+    int playerTwoX = (int)boardLength;
+    int playerTwoY = (int)boardWidth;
     double playerTwoScore = 0;
 
     int newX = 0;
@@ -152,8 +160,11 @@ int main() {
 
     //while (1) {//gameover
         if (playerOnMove(totalMoves) == 1) {
-            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth);
+            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
             cout << endl;
+
+            setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
             cout << "Score of player one: " << playerOneScore << '\t'
                 << '\t' << "Score of player two: " << playerTwoScore;
             cout << endl;
@@ -165,6 +176,8 @@ int main() {
         else {
         }
    // }
+
+        setColor(GREY_TEXT_BLACK_BACKGROUND);
 
     delete[] mathOperationsArr;
     delete[] numArr;
@@ -474,8 +487,8 @@ void generateGameBoard(char*& mathOperationsArr,
     }
 
     if ((boardLength * boardWidth) % 2 != 0) {
-        int midRow = (boardWidth + 2) / 2;
-        int midCol = (boardLength + 2) / 2;
+        int midRow = (int)(boardWidth + 2) / 2;
+        int midCol = (int)(boardLength + 2) / 2;
 
         int randomMathOperationCode = getRandomNumberInInterval(NUMBER_OF_MATH_OPERATIONS);
         mathOperationsGrid[midRow][midCol] = codeToMathOperation(randomMathOperationCode);
@@ -672,16 +685,28 @@ void scoreUpdate(double& score, int coordinateX, int coordinateY,
 }
 
 //Function to color the text and the background in the console
-void colorSet(int color) {
+void setColor(int color) {
     HANDLE  hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, color);
 }
 
+void colorCell(int** visitedCoordinates, int i, int j) {
+    if (visitedCoordinates[i][j] == 0) {
+        setColor(BLACK_TEXT_WHITE_BACKGROUND);
+    }
+    else if (visitedCoordinates[i][j] == 1) {
+        setColor(WHITE_TEXT_BLUE_BACKGROUND);
+    }
+    else if (visitedCoordinates[i][j] == 2) {
+        setColor(WHITE_TEXT_GREEN_BACKGROUND);
+    }
+}
+
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
-    size_t gridLength, size_t gridWidth) {
-    int firstLoopStop = gridWidth - 1;
-    int secondLoopStop = gridLength - 1;
+    size_t gridLength, size_t gridWidth, int** visitedCoordinates) {
+    int firstLoopStop = (int)gridWidth - 1;
+    int secondLoopStop = (int)gridLength - 1;
 
     for (size_t i = 0; i < firstLoopStop; i++) {
         for (size_t j = 0; j < secondLoopStop; j++) {
@@ -695,13 +720,19 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
             }
 
             if (numGrid[i][j] < 10) {
+                colorCell(visitedCoordinates, i, j);
                 cout << mathOperationsGrid[i][j] << "  " << numGrid[i][j] << "\t";
+                setColor(WHITE_TEXT_BLACK_BACKGROUND);
             }
             else if (numGrid[i][j] >= 10) {
+                colorCell(visitedCoordinates, i, j);
                 cout << mathOperationsGrid[i][j] << " " << numGrid[i][j] << "\t";
+                setColor(WHITE_TEXT_BLACK_BACKGROUND);
             }
             else {
+                colorCell(visitedCoordinates, i, j);
                 cout << mathOperationsGrid[i][j] << numGrid[i][j] << "\t";
+                setColor(WHITE_TEXT_BLACK_BACKGROUND);
             }
         }
         if (i == 0) {
@@ -711,13 +742,13 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
     }
 }
 
-void getNewValidMove(int playerX, int playerY) {
-    int newX = 0;
-    int newY = 0;
-
-    cout << "Enter next move: ";
-    while (isMovePossible);
-}
+//void getNewValidMove(int playerX, int playerY) {
+//    int newX = 0;
+//    int newY = 0;
+//
+//    cout << "Enter next move: ";
+//    while (isMovePossible);
+//}
 
 void initializeVisitedCoordinatesBoard(int** visitedCoordinates, 
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength) {
