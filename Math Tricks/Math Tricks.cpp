@@ -1,20 +1,32 @@
 #include <iostream>
+#include <fstream>
 #include <windows.h>
 using namespace std;
+
+struct Game {
+    size_t gridLength;
+    size_t gridWidth;
+    char** MOGrid; //Math Operations
+    int** NGrid; //Numbers
+    int** VCGrid; //VisitedCoordinates
+    double scoreOne;
+    double scoreTwo;
+    int totalMoves;
+};
 
 const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
 const int NUMBER_OF_MATH_OPERATIONS = 5;
 const int MAX_DIGITS = 3;
 const int MARGIN = 2;
 
-const int BLACK_TEXT_WHITE_BACKGROUND = 240;//0 + 15*16
-const int WHITE_TEXT_BLACK_BACKGROUND = 15;//15 + 0*16
-const int GREY_TEXT_BLACK_BACKGROUND = 7;//7 + 0*16
-const int WHITE_TEXT_BLUE_BACKGROUND = 63;//15 + 3*16
-const int YELLOW_TEXT_BLUE_BACKGROUND = 62;//14+ 3*16
-const int WHITE_TEXT_GREEN_BACKGROUND = 47;//15 + 2*16
-const int YELLOW_TEXT_GREEN_BACKGROUND = 46;//14 + 2*16
-const int CORAL_TEXT_WHITE_BACKGROUND = 252;//12 + 15*16
+const int BLACK_TEXT_WHITE_BACKGROUND = 240; //0 + 15*16
+const int WHITE_TEXT_BLACK_BACKGROUND = 15; //15 + 0*16
+const int GREY_TEXT_BLACK_BACKGROUND = 7; //7 + 0*16
+const int WHITE_TEXT_BLUE_BACKGROUND = 63; //15 + 3*16
+const int YELLOW_TEXT_BLUE_BACKGROUND = 62; //14+ 3*16
+const int WHITE_TEXT_GREEN_BACKGROUND = 47; //15 + 2*16
+const int YELLOW_TEXT_GREEN_BACKGROUND = 46; //14 + 2*16
+const int CORAL_TEXT_WHITE_BACKGROUND = 252; //12 + 15*16
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
@@ -75,7 +87,7 @@ void scoreUpdate(double& score, int coordinateX, int coordinateY,
 
 void setColor(int color);
 
-void colorCell(int** visitedCoordinates, int i, int j);
+void colorCell(int** visitedCoordinates, size_t i, size_t j);
 
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
     size_t gridLength, size_t gridWidth, int** visitedCoordinates);
@@ -84,6 +96,8 @@ void getNewValidMove(int& playerX, int& playerY, int** visitedCoordinates);
 
 void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
+
+void saveGameProgress(fstream& fileGR, Game gameRecord);
 
 int main() {
     //A seed for the random number function
@@ -161,6 +175,8 @@ int main() {
 
     //printGrid(visitedCoordinates, gridWidth, gridWidth);
 
+    fstream fileGameRecords; 
+
     while (!isGameOver(playerOneX, playerOneY, playerTwoX,
         playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
         if (playerOnMove(totalMoves) == 1) {
@@ -207,6 +223,11 @@ int main() {
         }
 
         totalMoves++;
+
+        Game gameRecord = { gridLength, gridWidth, mathOperationsGrid, numGrid,
+        visitedCoordinates, playerOneScore, playerTwoScore, totalMoves };
+        saveGameProgress(fileGameRecords, gameRecord);
+
         clearConsole();
     }
 
@@ -366,6 +387,9 @@ char codeToMathOperation(int mathOperationCode) {
     }
     else if (mathOperationCode == 5) {
         return '/';
+    }
+    else {
+        return -1;
     }
 }
 void randomGenMathOperationsArray(char*& mathOperationsArr, size_t mathOperationsArrLength) {
@@ -739,7 +763,7 @@ void setColor(int color) {
 }
 
 //Function to color only one cell on the board
-void colorCell(int** visitedCoordinates, int i, int j) {
+void colorCell(int** visitedCoordinates, size_t i, size_t j) {
     if (visitedCoordinates[i][j] == 0) {
         setColor(BLACK_TEXT_WHITE_BACKGROUND);
     }
@@ -804,13 +828,13 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
         }
     }
 
-    int lastCol = gridLength - 1;
+    int lastCol = (int)gridLength - 1;
     for (size_t i = 0; i < gridWidth; i++) {
         visitedCoordinates[i][0] = 3;
         visitedCoordinates[i][lastCol] = 3;
     }
 
-    int lastRow = gridWidth - 1;
+    int lastRow = (int)gridWidth - 1;
     for (size_t j = 0; j < gridLength; j++) {
         visitedCoordinates[0][j] = 3;
         visitedCoordinates[lastRow][j] = 3;
@@ -833,4 +857,40 @@ void getNewValidMove(int& playerX, int& playerY, int** visitedCoordinates) {
 
     playerX = newX;
     playerY = newY;
+}
+
+void saveGameProgress(fstream& fileGR, Game gameRecord) {
+    fileGR.open("Game Records.txt", ios::out);
+
+    fileGR << gameRecord.gridLength << " " << gameRecord.gridWidth << "\n";
+
+    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
+        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+            fileGR << gameRecord.MOGrid[i][j] << " ";
+        }
+        //fileGR << endl;
+    }
+    fileGR << endl;
+
+    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
+        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+            fileGR << gameRecord.NGrid[i][j] << " ";
+        }
+        //fileGR << endl;
+    }
+    fileGR << endl;
+
+    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
+        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+            fileGR << gameRecord.VCGrid[i][j] << " ";
+        }
+        //fileGR << endl;
+    }
+    fileGR << endl;
+
+
+    fileGR << gameRecord.scoreOne << " " << gameRecord.scoreTwo
+        << " " << gameRecord.totalMoves << endl;
+
+    fileGR.close();
 }
