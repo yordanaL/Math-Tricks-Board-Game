@@ -894,3 +894,31 @@ void saveGameProgress(fstream& fileGR, Game gameRecord) {
 
     fileGR.close();
 }
+
+void restoreGameProgress(fstream& fileGR, Game gameRecord) {
+    fileGR.open("Game Records.txt", ios::in);
+
+    fileGR >> gameRecord.gridLength >> gameRecord.gridWidth;
+
+    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
+        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+            fileGR >> gameRecord.MOGrid[i][j];
+        }
+    }
+
+    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
+        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+            fileGR >> gameRecord.NGrid[i][j];
+        }
+    }
+
+    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
+        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+            fileGR >> gameRecord.VCGrid[i][j];
+        }
+    }
+
+    fileGR >> gameRecord.scoreOne >> gameRecord.scoreTwo >> gameRecord.totalMoves;
+
+    fileGR.close();
+}
