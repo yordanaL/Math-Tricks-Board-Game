@@ -28,6 +28,9 @@ const int WHITE_TEXT_GREEN_BACKGROUND = 47; //15 + 2*16
 const int YELLOW_TEXT_GREEN_BACKGROUND = 46; //14 + 2*16
 const int CORAL_TEXT_WHITE_BACKGROUND = 252; //12 + 15*16
 
+void startMenu(int& gameMode);
+void readingBoardLengthAndWidth(size_t& boardLength, size_t& boardWidth);
+
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
 void clearConsole();
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth);
@@ -98,63 +101,28 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
 
 void saveGameProgress(fstream& fileGR, Game gameRecord);
+void restoreGameProgress(fstream& fileGR, Game gameRecord);
 
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
 
-    //Read the board size from the console
+    int gameMode = 0;
+    startMenu(gameMode);
+
     size_t boardLength = MIN_BOARD_LENGTH, boardWidth = MIN_BOARD_WIDTH;
-    cout << "To start the game enter the board size." << endl;
-    cout << "Enter the board length (>= 4): ";
-    cin >> boardLength;
-    cout << "Enter the board width (>= 4): ";
-    cin >> boardWidth;
+    size_t mathOperationsArrLength = 0;
+    char* mathOperationsArr = nullptr;
+    size_t numArrLength =0;
+    int* numArr = nullptr;
 
-    while (!isInputBoardSizeValid(boardLength, boardWidth)) {
-        clearConsole();
-        cout << "Invalid board size! Please, enter new board size." << endl;
-
-        cout << "Enter the board length (>= 4): ";
-        cin >> boardLength;
-        cout << "Enter the board width (>= 4): ";
-        cin >> boardWidth;
-    }
-
-    //Generating game board
-    size_t mathOperationsArrLength = boardLength * boardWidth / 2;
-    char* mathOperationsArr = new char[mathOperationsArrLength];
-
-    size_t numArrLength = boardLength * boardWidth / 2;
-    int* numArr = new int[numArrLength];
-
-    int difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
-
-    size_t gridLength = boardLength + 2;
-    size_t gridWidth = boardWidth + 2;
+    int difficultyCoefficient=0;
+    size_t gridLength = 0;
+    size_t gridWidth = 0;
     char** mathOperationsGrid = nullptr;
-    createGrid(mathOperationsGrid, gridWidth, gridLength);
-
     int** numGrid = nullptr;
-    createGrid(numGrid, gridWidth, gridLength);
+    int** visitedCoordinates = nullptr;
 
-    generateGameBoard(mathOperationsArr, mathOperationsArrLength,
-        numArr, numArrLength, difficultyCoefficient,
-        boardLength, boardWidth, mathOperationsGrid, numGrid);
-
-    size_t visualBoardLength = boardLength + MAX_DIGITS * boardLength + MARGIN * (boardLength + 1);
-    size_t visualBoardWidth = boardWidth + (boardLength + 1);
-    char** visualBoard = nullptr;
-    createGrid(visualBoard, visualBoardWidth, visualBoardLength);
-    initialInitializationOfVisualBoard(visualBoard, visualBoardWidth, visualBoardLength);
-    buildVisualBoard(visualBoard, visualBoardLength, visualBoardWidth,
-        mathOperationsGrid, numGrid, gridLength, gridWidth,
-        boardLength, boardWidth);
-
-    clearConsole();
-    //printGrid(visualBoard, visualBoardWidth, visualBoardLength);
-
-    //Game moves
     int playerOneX = 1;
     int playerOneY = 1;
     double playerOneScore = 0;
@@ -168,14 +136,46 @@ int main() {
 
     int totalMoves = 0;
 
-    int** visitedCoordinates = nullptr;
-    createGrid(visitedCoordinates, gridWidth, gridLength);
-    initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
-        boardWidth, boardLength);
+    fstream fileGameRecords;
 
-    //printGrid(visitedCoordinates, gridWidth, gridWidth);
+    if (gameMode == 1) {
+        clearConsole();
+        readingBoardLengthAndWidth(boardLength, boardWidth);
 
-    fstream fileGameRecords; 
+        //Generating game board
+        mathOperationsArrLength = boardLength * boardWidth / 2;
+        mathOperationsArr = new char[mathOperationsArrLength];
+
+        numArrLength = boardLength * boardWidth / 2;
+        numArr = new int[numArrLength];
+
+        difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
+
+        gridLength = boardLength + 2;
+        gridWidth = boardWidth + 2;
+        mathOperationsGrid = nullptr;
+        createGrid(mathOperationsGrid, gridWidth, gridLength);
+
+        numGrid = nullptr;
+        createGrid(numGrid, gridWidth, gridLength);
+
+        generateGameBoard(mathOperationsArr, mathOperationsArrLength,
+            numArr, numArrLength, difficultyCoefficient,
+            boardLength, boardWidth, mathOperationsGrid, numGrid);
+
+        visitedCoordinates = nullptr;
+        createGrid(visitedCoordinates, gridWidth, gridLength);
+        initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
+            boardWidth, boardLength);
+    }
+    else if (gameMode == 2) {
+        Game gameRecord = { gridLength, gridWidth, mathOperationsGrid, numGrid,
+        visitedCoordinates, playerOneScore, playerTwoScore, totalMoves };
+
+        restoreGameProgress(fileGameRecords, gameRecord);
+    }
+
+    clearConsole();
 
     while (!isGameOver(playerOneX, playerOneY, playerTwoX,
         playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
@@ -231,7 +231,17 @@ int main() {
         clearConsole();
     }
 
+    fileGameRecords.open("Game Records.txt", ios::out);
+    fileGameRecords << " ";
+    fileGameRecords.close();
+
     printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+    cout << endl << endl;
+
+    setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+    cout << "Score of player one: " << playerOneScore << '\t'
+        << '\t' << "Score of player two: " << playerTwoScore;
     cout << endl << endl;
     
     setColor(CORAL_TEXT_WHITE_BACKGROUND);
@@ -252,10 +262,51 @@ int main() {
 
     deleteGrid(mathOperationsGrid, gridWidth);
     deleteGrid(numGrid, gridWidth);
-    deleteGrid(visualBoard, visualBoardWidth);
+    //deleteGrid(visualBoard, visualBoardWidth);
     deleteGrid(visitedCoordinates, gridWidth);
 
     return 0;
+}
+
+void startMenu(int& gameMode) {
+    int NGOrRG = 0;
+
+    cout << "Welcome to Math Tricks!" << endl << endl;
+    cout << "To continue choose one of the options below: " << endl;
+    cout << "1) New Game" << endl;
+    cout << "2) Resume Game" << endl;
+    cout << "Please enter your choice(1 or 2): ";
+    cin >> NGOrRG;
+
+    if (NGOrRG == 1) {
+        gameMode = 1;
+    }
+    else if (NGOrRG == 2) {
+        gameMode = 2;
+    }
+    else {
+        clearConsole();
+        startMenu(gameMode);
+    }
+}
+
+void readingBoardLengthAndWidth(size_t& boardLength, size_t& boardWidth) {
+    //Read the board size from the console
+    cout << "To start the game enter the board size." << endl;
+    cout << "Enter the board length (>= 4): ";
+    cin >> boardLength;
+    cout << "Enter the board width (>= 4): ";
+    cin >> boardWidth;
+
+    while (!isInputBoardSizeValid(boardLength, boardWidth)) {
+        clearConsole();
+        cout << "Invalid board size! Please, enter new board size." << endl;
+
+        cout << "Enter the board length (>= 4): ";
+        cin >> boardLength;
+        cout << "Enter the board width (>= 4): ";
+        cin >> boardWidth;
+    }
 }
 
 //Function to check whether the board length and width are minimum 4
@@ -374,7 +425,7 @@ void printGrid(bool** grid, size_t rows, size_t cols) {
 //Generating random math operation array to later use it to build the game board
 char codeToMathOperation(int mathOperationCode) {
     if (mathOperationCode == 1) {
-        return ' ';
+        return '>';
     }
     else if (mathOperationCode == 2) {
         return '+';
@@ -862,26 +913,26 @@ void getNewValidMove(int& playerX, int& playerY, int** visitedCoordinates) {
 void saveGameProgress(fstream& fileGR, Game gameRecord) {
     fileGR.open("Game Records.txt", ios::out);
 
-    fileGR << gameRecord.gridLength << " " << gameRecord.gridWidth << "\n";
+    fileGR << gameRecord.gridLength << " " << gameRecord.gridWidth << endl;
 
-    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
-        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+        for (size_t j = 0; j < gameRecord.gridLength; j++) {
             fileGR << gameRecord.MOGrid[i][j] << " ";
         }
         //fileGR << endl;
     }
     fileGR << endl;
 
-    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
-        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+        for (size_t j = 0; j < gameRecord.gridLength; j++) {
             fileGR << gameRecord.NGrid[i][j] << " ";
         }
         //fileGR << endl;
     }
     fileGR << endl;
 
-    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
-        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+        for (size_t j = 0; j < gameRecord.gridLength; j++) {
             fileGR << gameRecord.VCGrid[i][j] << " ";
         }
         //fileGR << endl;
@@ -900,20 +951,20 @@ void restoreGameProgress(fstream& fileGR, Game gameRecord) {
 
     fileGR >> gameRecord.gridLength >> gameRecord.gridWidth;
 
-    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
-        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+        for (size_t j = 0; j < gameRecord.gridLength; j++) {
             fileGR >> gameRecord.MOGrid[i][j];
         }
     }
 
-    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
-        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+        for (size_t j = 0; j < gameRecord.gridLength; j++) {
             fileGR >> gameRecord.NGrid[i][j];
         }
     }
 
-    for (size_t i = 0; i < gameRecord.gridWidth; ++i) {
-        for (size_t j = 0; j < gameRecord.gridLength; ++j) {
+    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+        for (size_t j = 0; j < gameRecord.gridLength; j++) {
             fileGR >> gameRecord.VCGrid[i][j];
         }
     }
