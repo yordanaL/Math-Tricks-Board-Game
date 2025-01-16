@@ -676,7 +676,7 @@ void printGrid(bool** grid, size_t rows, size_t cols) {
 //Generating random math operation array to later use it to build the game board
 char codeToMathOperation(int mathOperationCode) {
     if (mathOperationCode == 1) {
-        return ' ';
+        return '_';
     }
     else if (mathOperationCode == 2) {
         return '+';
@@ -728,7 +728,7 @@ bool isHalfBoardFulfillingBoardRequirements(char*& mathOperationsArr, size_t mat
         else if (mathOperationsArr[i] == '-') {
             metSubtraction = true;
         }
-        else if (mathOperationsArr[i] == ' ') {
+        else if (mathOperationsArr[i] == '_') {
             metZero = true;
         }
         else if (mathOperationsArr[i] == '*' && numArr[i] == 2) {
@@ -761,7 +761,7 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
         randomInd = getRandomNumberInInterval(lastInd);
         mathOperationsArr[randomInd] = '-';
         randomInd = getRandomNumberInInterval(lastInd);
-        mathOperationsArr[randomInd] = ' ';
+        mathOperationsArr[randomInd] = '_';
         randomInd = getRandomNumberInInterval(lastInd);
         mathOperationsArr[randomInd] = '*';
         numArr[randomInd] = 2;
@@ -771,7 +771,7 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
     }
    
     for (size_t i = 1; i < numArrLength; i++) {
-        if (mathOperationsArr[i] == ' ') {
+        if (mathOperationsArr[i] == '_') {
             numArr[i] = 0;
         }
     }
