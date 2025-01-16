@@ -23,6 +23,10 @@ const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
 const int NUMBER_OF_MATH_OPERATIONS = 5;
 const int MAX_DIGITS = 3;
 const int MARGIN = 2;
+const int LEVEL_DIFFICULTY = 20;
+
+const int NEW_GAME = 1;
+const int RESUME_GAME = 2;
 
 const int BLACK_TEXT_WHITE_BACKGROUND = 240; //0 + 15*16
 const int WHITE_TEXT_BLACK_BACKGROUND = 15; //15 + 0*16
@@ -82,7 +86,8 @@ void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visu
     char** mathOperationsGrid, int** numGrid, size_t gridLength, size_t gridWidth,
     size_t boardLength, size_t boardWidth);
 
-bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenCoordinates);
+bool isMovePossible(int currentX, int currentY, int newX, int newY,
+    int** takenCoordinates, size_t gridLength, size_t gridWidth);
 
 int playerOnMove(int totalMoves);
 
@@ -100,7 +105,8 @@ void colorCell(int** visitedCoordinates, size_t i, size_t j);
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
     size_t gridLength, size_t gridWidth, int** visitedCoordinates);
 
-void getNewValidMove(int& playerX, int& playerY, int** visitedCoordinates);
+void getNewValidMove(int& playerX, int& playerY, 
+    int** visitedCoordinates, size_t gridLength, size_t gridWidth);
 
 void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
@@ -146,11 +152,12 @@ int main() {
 
     Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
         playerOneX, playerOneY, playerTwoX, playerTwoY , mathOperationsGrid, numGrid,
-        visitedCoordinates };
+        visitedCoordinates 
+    };
 
     fstream fileGameRecords;
 
-    if (gameMode == 1) {
+    if (gameMode == NEW_GAME) {
         clearConsole();
         readingBoardLengthAndWidth(boardLength, boardWidth);
         clearConsole();
@@ -182,7 +189,7 @@ int main() {
         initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
             boardWidth, boardLength);
     }
-    else if (gameMode == 2) {
+    else if (gameMode == RESUME_GAME) {
         clearConsole();
 
         fileGameRecords.open("Game Records.txt", ios::in);
@@ -215,7 +222,7 @@ int main() {
 
             cout << endl;
             cout << "Player One's turn." << endl;
-            getNewValidMove(playerOneX, playerOneY, visitedCoordinates);
+            getNewValidMove(playerOneX, playerOneY, visitedCoordinates,gridLength, gridWidth);
             visitedCoordinates[playerOneY][playerOneX] = 11;
 
             clearConsole();
@@ -236,7 +243,7 @@ int main() {
 
             cout << endl;
             cout << "Player Two's turn." << endl;
-            getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates);
+            getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates, gridLength, gridWidth);
             visitedCoordinates[playerTwoY][playerTwoX] = 22;
 
             clearConsole();
@@ -298,7 +305,7 @@ void startMenu(int& gameMode) {
     cout << "To continue choose one of the options below: " << endl;
     cout << "1) New Game" << endl;
     cout << "2) Resume Game" << endl;
-    cout << "Please enter your choice(1 or 2): ";
+    cout << "Please, enter your choice(1 or 2): ";
     cin >> NGOrRG;
 
     if (NGOrRG == 1) {
@@ -309,6 +316,7 @@ void startMenu(int& gameMode) {
     }
     else {
         clearConsole();
+        cout << "Please enter valid option!" << endl;
         startMenu(gameMode);
     }
 }
@@ -348,12 +356,12 @@ void clearConsole() {
 //A higher difficulty coefficient will give chance for bigger numbers to appear on the board
 int calculateCoefficientOfDifficulty(size_t boardLength, size_t boardWidth) {
     size_t boardSize = boardLength * boardWidth;
-    int difficultyCoefficient = (int)boardSize / 100 + 1;
+    int difficultyCoefficient = (int)boardSize / LEVEL_DIFFICULTY + 1;
 
     const int MIN_COEFFICIENT = 1, MAX_COEFFICIENT = 10;
 
-    if (difficultyCoefficient > 10) {
-        difficultyCoefficient = 10;
+    if (difficultyCoefficient > MAX_COEFFICIENT) {
+        difficultyCoefficient = MAX_COEFFICIENT;
     }
 
     return difficultyCoefficient;
@@ -738,25 +746,26 @@ void buildVisualBoard(char**& visualBoard, size_t visualBoardLength, size_t visu
 }
 
 //Function to check whether a player is possible to move to given coordinates 
-bool isMovePossible(int currentX, int currentY, int newX, int newY, int** takenCoordinates) {
-    if (takenCoordinates[newY][newX] != 0) {
+bool isMovePossible(int currentX, int currentY, int newX, int newY, 
+    int** takenCoordinates, size_t gridLength, size_t gridWidth) {
+    if (newX >= gridLength || newY >= gridWidth) {
         return false;
     }
-    
-    //During every move a player have to move from their current coordinates
-    if (newX == currentX && newY == currentY) {
+    else if (takenCoordinates[newY][newX] != 0) {
         return false;
     }
-
-    if (newX > currentX + 1 || newX < currentX - 1) {
+    else if (newX == currentX && newY == currentY) {    //During every move a player have to move from their current coordinates
         return false;
     }
-
-    if (newY > currentY + 1 || newY < currentY - 1) {
+    else if (newX > currentX + 1 || newX < currentX - 1) {
         return false;
     }
-
-    return true;
+    else if (newY > currentY + 1 || newY < currentY - 1) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 //Function to switch turns 
@@ -918,11 +927,12 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     visitedCoordinates[boardWidth][boardLength] = 22;
 }
 
-void getNewValidMove(int& playerX, int& playerY, int** visitedCoordinates) {
+void getNewValidMove(int& playerX, int& playerY, 
+    int** visitedCoordinates, size_t gridLength, size_t gridWidth) {
     int newX = 0;
     int newY = 0;
 
-    while (!isMovePossible(playerX, playerY, newX, newY, visitedCoordinates)) {
+    while (!isMovePossible(playerX, playerY, newX, newY, visitedCoordinates, gridLength, gridWidth)) {
         cout << "Enter next move: ";
         cin >> newX >> newY;
 
