@@ -147,172 +147,344 @@ int main() {
 
     fstream fileGameRecords;
 
-    if (gameMode == 1) {
-        clearConsole();
-        readingBoardLengthAndWidth(boardLength, boardWidth);
+    //if (gameMode == 1) {
+    //    clearConsole();
+    //    readingBoardLengthAndWidth(boardLength, boardWidth);
 
-        //Generating game board
-        mathOperationsArrLength = boardLength * boardWidth / 2;
-        mathOperationsArr = new char[mathOperationsArrLength];
+    //    clearConsole();
+    //    //Generating game board
+    //    mathOperationsArrLength = boardLength * boardWidth / 2;
+    //    mathOperationsArr = new char[mathOperationsArrLength];
 
-        numArrLength = boardLength * boardWidth / 2;
-        numArr = new int[numArrLength];
+    //    numArrLength = boardLength * boardWidth / 2;
+    //    numArr = new int[numArrLength];
 
-        difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
+    //    difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
-        gridLength = boardLength + 2;
-        gridWidth = boardWidth + 2;
-        //mathOperationsGrid = nullptr;
-        createGrid(mathOperationsGrid, gridWidth, gridLength);
+    //    gridLength = boardLength + 2;
+    //    gridWidth = boardWidth + 2;
+    //    //mathOperationsGrid = nullptr;
+    //    createGrid(mathOperationsGrid, gridWidth, gridLength);
 
-        //numGrid = nullptr;
-        createGrid(numGrid, gridWidth, gridLength);
+    //    //numGrid = nullptr;
+    //    createGrid(numGrid, gridWidth, gridLength);
 
-        generateGameBoard(mathOperationsArr, mathOperationsArrLength,
-            numArr, numArrLength, difficultyCoefficient,
-            boardLength, boardWidth, mathOperationsGrid, numGrid);
+    //    generateGameBoard(mathOperationsArr, mathOperationsArrLength,
+    //        numArr, numArrLength, difficultyCoefficient,
+    //        boardLength, boardWidth, mathOperationsGrid, numGrid);
 
-        //visitedCoordinates = nullptr;
-        createGrid(visitedCoordinates, gridWidth, gridLength);
-        initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
-            boardWidth, boardLength);
+    //    //visitedCoordinates = nullptr;
+    //    createGrid(visitedCoordinates, gridWidth, gridLength);
+    //    initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
+    //        boardWidth, boardLength);
 
-        while (!isGameOver(playerOneX, playerOneY, playerTwoX,
-            playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
-            if (playerOnMove(totalMoves) == 1) {
-                printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
-                cout << endl;
+    //    while (!isGameOver(playerOneX, playerOneY, playerTwoX,
+    //        playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
+    //        if (playerOnMove(totalMoves) == 1) {
+    //            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+    //            cout << endl;
 
-                setColor(BLACK_TEXT_WHITE_BACKGROUND);
+    //            setColor(BLACK_TEXT_WHITE_BACKGROUND);
 
-                cout << "Score of player one: " << playerOneScore << '\t'
-                    << '\t' << "Score of player two: " << playerTwoScore;
-                cout << endl;
+    //            cout << "Score of player one: " << playerOneScore << '\t'
+    //                << '\t' << "Score of player two: " << playerTwoScore;
+    //            cout << endl;
 
-                visitedCoordinates[playerOneY][playerOneX] = 1;
+    //            visitedCoordinates[playerOneY][playerOneX] = 1;
 
-                cout << endl;
-                cout << "Player One's turn." << endl;
-                getNewValidMove(playerOneX, playerOneY, visitedCoordinates);
-                visitedCoordinates[playerOneY][playerOneX] = 11;
+    //            cout << endl;
+    //            cout << "Player One's turn." << endl;
+    //            getNewValidMove(playerOneX, playerOneY, visitedCoordinates);
+    //            visitedCoordinates[playerOneY][playerOneX] = 11;
 
-                clearConsole();
-                setColor(WHITE_TEXT_BLACK_BACKGROUND);
-                scoreUpdate(playerOneScore, playerOneX, playerOneY, mathOperationsGrid, numGrid);
-            }
-            else {
-                printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
-                cout << endl;
+    //            clearConsole();
+    //            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+    //            scoreUpdate(playerOneScore, playerOneX, playerOneY, mathOperationsGrid, numGrid);
+    //        }
+    //        else {
+    //            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+    //            cout << endl;
 
-                setColor(BLACK_TEXT_WHITE_BACKGROUND);
+    //            setColor(BLACK_TEXT_WHITE_BACKGROUND);
 
-                cout << "Score of player one: " << playerOneScore << '\t'
-                    << '\t' << "Score of player two: " << playerTwoScore;
-                cout << endl;
+    //            cout << "Score of player one: " << playerOneScore << '\t'
+    //                << '\t' << "Score of player two: " << playerTwoScore;
+    //            cout << endl;
 
-                visitedCoordinates[playerTwoY][playerTwoX] = 2;
+    //            visitedCoordinates[playerTwoY][playerTwoX] = 2;
 
-                cout << endl;
-                cout << "Player Two's turn." << endl;
-                getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates);
-                visitedCoordinates[playerTwoY][playerTwoX] = 22;
+    //            printGrid(visitedCoordinates, gridWidth, gridLength);
 
-                clearConsole();
-                setColor(WHITE_TEXT_BLACK_BACKGROUND);
-                scoreUpdate(playerTwoScore, playerTwoX, playerTwoY, mathOperationsGrid, numGrid);
-            }
+    //            cout << endl;
+    //            cout << "Player Two's turn." << endl;
+    //            getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates);
+    //            visitedCoordinates[playerTwoY][playerTwoX] = 22;
 
-            totalMoves++;
+    //            clearConsole();
+    //            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+    //            scoreUpdate(playerTwoScore, playerTwoX, playerTwoY, mathOperationsGrid, numGrid);
+    //        }
 
-            Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
-            playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
-            visitedCoordinates };
-            saveGameProgress(fileGameRecords, gameRecord);
+    //        totalMoves++;
+
+    //        Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
+    //        playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
+    //        visitedCoordinates };
+    //        saveGameProgress(fileGameRecords, gameRecord);
+
+    //        clearConsole();
+    //    }
+
+    //    fileGameRecords.open("Game Records.txt", ios::out);
+    //    fileGameRecords << " ";
+    //    fileGameRecords.close();
+    //}
+    //else if (gameMode == 2) {
+    //    clearConsole();
+    //    gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
+    //    playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
+    //    visitedCoordinates};
+
+    //    fileGameRecords.open("Game Records.txt", ios::in);
+    //    fileGameRecords >> gameRecord.gridLength >> gameRecord.gridWidth;
+    //    fileGameRecords.close();
+
+    //    createGrid(gameRecord.MOGrid, gameRecord.gridWidth, gameRecord.gridLength);
+    //    createGrid(gameRecord.NGrid, gameRecord.gridWidth, gameRecord.gridLength);
+    //    createGrid(gameRecord.VCGrid, gameRecord.gridWidth, gameRecord.gridLength);
+
+    //    restoreGameProgress(fileGameRecords, gameRecord);
+
+    //    clearConsole();
+
+    //    while (!isGameOver(gameRecord.playerOneX, gameRecord.playerOneY, gameRecord.playerTwoX,
+    //        gameRecord.playerTwoY, gameRecord.VCGrid, gameRecord.gridLength, gameRecord.gridWidth)) {
+    //        if (playerOnMove(gameRecord.totalMoves) == 1) {
+    //            printGameBoard(gameRecord.MOGrid, gameRecord.NGrid,
+    //                gameRecord.gridLength, gameRecord.gridWidth, gameRecord.VCGrid);
+    //            cout << endl;
+
+    //            setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+    //            cout << "Score of player one: " << gameRecord.scoreOne << '\t'
+    //                << '\t' << "Score of player two: " << gameRecord.scoreTwo;
+    //            cout << endl;
+
+    //            gameRecord.VCGrid[gameRecord.playerOneY][gameRecord.playerOneX] = 1;
+
+    //            cout << endl;
+    //            cout << "Player One's turn." << endl;
+    //            getNewValidMove(gameRecord.playerOneX, gameRecord.playerOneY, gameRecord.VCGrid);
+    //            gameRecord.VCGrid[gameRecord.playerOneY][gameRecord.playerOneX] = 11;
+
+    //            clearConsole();
+    //            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+    //            scoreUpdate(gameRecord.scoreOne, gameRecord.playerOneX, gameRecord.playerOneY,
+    //                gameRecord.MOGrid, gameRecord.NGrid);
+    //        }
+    //        else {
+    //            printGameBoard(gameRecord.MOGrid, gameRecord.NGrid,
+    //                gameRecord.gridLength, gameRecord.gridWidth, gameRecord.VCGrid);
+    //            cout << endl;
+
+    //            setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+    //            cout << "Score of player one: " << gameRecord.scoreOne << '\t'
+    //                << '\t' << "Score of player two: " << gameRecord.scoreTwo;
+    //            cout << endl;
+
+    //            gameRecord.VCGrid[playerTwoY][playerTwoX] = 2;
+
+    //            cout << endl;
+    //            cout << "Player Two's turn." << endl;
+    //            getNewValidMove(gameRecord.playerTwoX, gameRecord.playerTwoY, gameRecord.VCGrid);
+    //            gameRecord.VCGrid[playerTwoY][playerTwoX] = 22;
+
+    //            clearConsole();
+    //            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+    //            scoreUpdate(gameRecord.scoreTwo, gameRecord.playerTwoX, gameRecord.playerTwoY,
+    //                gameRecord.MOGrid, gameRecord.NGrid);
+    //        }
+
+    //        gameRecord.totalMoves++;
+
+    //        Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
+    //        playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
+    //        visitedCoordinates };
+    //        saveGameProgress(fileGameRecords, gameRecord);
+
+    //        clearConsole();
+    //    }
+    //}
+
+if (gameMode == 1) {
+    clearConsole();
+    readingBoardLengthAndWidth(boardLength, boardWidth);
+    clearConsole();
+
+    playerTwoX = (int)boardLength;
+    playerTwoY = (int)boardWidth;
+
+    //Generating game board
+    mathOperationsArrLength = boardLength * boardWidth / 2;
+    mathOperationsArr = new char[mathOperationsArrLength];
+
+    numArrLength = boardLength * boardWidth / 2;
+    numArr = new int[numArrLength];
+
+    difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
+
+    gridLength = boardLength + 2;
+    gridWidth = boardWidth + 2;
+
+    createGrid(mathOperationsGrid, gridWidth, gridLength);
+
+    createGrid(numGrid, gridWidth, gridLength);
+
+    generateGameBoard(mathOperationsArr, mathOperationsArrLength,
+        numArr, numArrLength, difficultyCoefficient,
+        boardLength, boardWidth, mathOperationsGrid, numGrid);
+
+    createGrid(visitedCoordinates, gridWidth, gridLength);
+    initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
+        boardWidth, boardLength);
+
+    while (!isGameOver(playerOneX, playerOneY, playerTwoX,
+        playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
+        if (playerOnMove(totalMoves) == 1) {
+            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+            cout << endl;
+
+            setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+            cout << "Score of player one: " << playerOneScore << '\t'
+                << '\t' << "Score of player two: " << playerTwoScore;
+            cout << endl;
+
+            visitedCoordinates[playerOneY][playerOneX] = 1;
+
+            cout << endl;
+            cout << "Player One's turn." << endl;
+            getNewValidMove(playerOneX, playerOneY, visitedCoordinates);
+            visitedCoordinates[playerOneY][playerOneX] = 11;
 
             clearConsole();
+            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+            scoreUpdate(playerOneScore, playerOneX, playerOneY, mathOperationsGrid, numGrid);
+        }
+        else {
+            printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
+            cout << endl;
+
+            setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+            cout << "Score of player one: " << playerOneScore << '\t'
+                << '\t' << "Score of player two: " << playerTwoScore;
+            cout << endl;
+
+            visitedCoordinates[playerTwoY][playerTwoX] = 2;
+
+            cout << endl;
+            cout << "Player Two's turn." << endl;
+            getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates);
+            visitedCoordinates[playerTwoY][playerTwoX] = 22;
+
+            clearConsole();
+            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+            scoreUpdate(playerTwoScore, playerTwoX, playerTwoY, mathOperationsGrid, numGrid);
         }
 
-        fileGameRecords.open("Game Records.txt", ios::out);
-        fileGameRecords << " ";
-        fileGameRecords.close();
-    }
-    else if (gameMode == 2) {
-        clearConsole();
+        totalMoves++;
+
         gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
         playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
-        visitedCoordinates};
-
-        fileGameRecords.open("Game Records.txt", ios::in);
-        fileGameRecords >> gameRecord.gridLength >> gameRecord.gridWidth;
-        fileGameRecords.close();
-
-        createGrid(gameRecord.MOGrid, gameRecord.gridWidth, gameRecord.gridLength);
-        createGrid(gameRecord.NGrid, gameRecord.gridWidth, gameRecord.gridLength);
-        createGrid(gameRecord.VCGrid, gameRecord.gridWidth, gameRecord.gridLength);
-
-        restoreGameProgress(fileGameRecords, gameRecord);
+        visitedCoordinates };
+        saveGameProgress(fileGameRecords, gameRecord);
 
         clearConsole();
+    }
 
-        while (!isGameOver(gameRecord.playerOneX, gameRecord.playerOneY, gameRecord.playerTwoX,
-            gameRecord.playerTwoY, gameRecord.VCGrid, gameRecord.gridLength, gameRecord.gridWidth)) {
-            if (playerOnMove(gameRecord.totalMoves) == 1) {
-                printGameBoard(gameRecord.MOGrid, gameRecord.NGrid,
-                    gameRecord.gridLength, gameRecord.gridWidth, gameRecord.VCGrid);
-                cout << endl;
+    fileGameRecords.open("Game Records.txt", ios::out);
+    fileGameRecords << " ";
+    fileGameRecords.close();
+}
+else if (gameMode == 2) {
+    clearConsole();
+    gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
+    playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
+    visitedCoordinates };
 
-                setColor(BLACK_TEXT_WHITE_BACKGROUND);
+    fileGameRecords.open("Game Records.txt", ios::in);
+    fileGameRecords >> gameRecord.gridLength >> gameRecord.gridWidth;
+    fileGameRecords.close();
 
-                cout << "Score of player one: " << gameRecord.scoreOne << '\t'
-                    << '\t' << "Score of player two: " << gameRecord.scoreTwo;
-                cout << endl;
+    createGrid(gameRecord.MOGrid, gameRecord.gridWidth, gameRecord.gridLength);
+    createGrid(gameRecord.NGrid, gameRecord.gridWidth, gameRecord.gridLength);
+    createGrid(gameRecord.VCGrid, gameRecord.gridWidth, gameRecord.gridLength);
 
-                gameRecord.VCGrid[gameRecord.playerOneY][gameRecord.playerOneX] = 1;
+    restoreGameProgress(fileGameRecords, gameRecord);
 
-                cout << endl;
-                cout << "Player One's turn." << endl;
-                getNewValidMove(gameRecord.playerOneX, gameRecord.playerOneY, gameRecord.VCGrid);
-                visitedCoordinates[gameRecord.playerOneY][gameRecord.playerOneX] = 11;
+    clearConsole();
 
-                clearConsole();
-                setColor(WHITE_TEXT_BLACK_BACKGROUND);
-                scoreUpdate(gameRecord.scoreOne, gameRecord.playerOneX, gameRecord.playerOneY,
-                    gameRecord.MOGrid, gameRecord.NGrid);
-            }
-            else {
-                printGameBoard(gameRecord.MOGrid, gameRecord.NGrid,
-                    gameRecord.gridLength, gameRecord.gridWidth, gameRecord.VCGrid);
-                cout << endl;
+    while (!isGameOver(gameRecord.playerOneX, gameRecord.playerOneY, gameRecord.playerTwoX,
+        gameRecord.playerTwoY, gameRecord.VCGrid, gameRecord.gridLength, gameRecord.gridWidth)) {
+        if (playerOnMove(gameRecord.totalMoves) == 1) {
+            printGameBoard(gameRecord.MOGrid, gameRecord.NGrid,
+                gameRecord.gridLength, gameRecord.gridWidth, gameRecord.VCGrid);
+            cout << endl;
 
-                setColor(BLACK_TEXT_WHITE_BACKGROUND);
+            setColor(BLACK_TEXT_WHITE_BACKGROUND);
 
-                cout << "Score of player one: " << gameRecord.scoreOne << '\t'
-                    << '\t' << "Score of player two: " << gameRecord.scoreTwo;
-                cout << endl;
+            cout << "Score of player one: " << gameRecord.scoreOne << '\t'
+                << '\t' << "Score of player two: " << gameRecord.scoreTwo;
+            cout << endl;
 
-                gameRecord.VCGrid[playerTwoY][playerTwoX] = 2;
+            gameRecord.VCGrid[gameRecord.playerOneY][gameRecord.playerOneX] = 1;
 
-                cout << endl;
-                cout << "Player Two's turn." << endl;
-                getNewValidMove(gameRecord.playerTwoX, gameRecord.playerTwoY, gameRecord.VCGrid);
-                gameRecord.VCGrid[playerTwoY][playerTwoX] = 22;
-
-                clearConsole();
-                setColor(WHITE_TEXT_BLACK_BACKGROUND);
-                scoreUpdate(gameRecord.scoreTwo, gameRecord.playerTwoX, gameRecord.playerTwoY,
-                    mathOperationsGrid, gameRecord.NGrid);
-            }
-
-            totalMoves++;
-
-            Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
-            playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
-            visitedCoordinates };
-            saveGameProgress(fileGameRecords, gameRecord);
+            cout << endl;
+            cout << "Player One's turn." << endl;
+            getNewValidMove(gameRecord.playerOneX, gameRecord.playerOneY, gameRecord.VCGrid);
+            gameRecord.VCGrid[gameRecord.playerOneY][gameRecord.playerOneX] = 11;
 
             clearConsole();
+            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+            scoreUpdate(gameRecord.scoreOne, gameRecord.playerOneX, gameRecord.playerOneY,
+                gameRecord.MOGrid, gameRecord.NGrid);
         }
+        else {
+            printGameBoard(gameRecord.MOGrid, gameRecord.NGrid,
+                gameRecord.gridLength, gameRecord.gridWidth, gameRecord.VCGrid);
+            cout << endl;
+
+            setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+            cout << "Score of player one: " << gameRecord.scoreOne << '\t'
+                << '\t' << "Score of player two: " << gameRecord.scoreTwo;
+            cout << endl;
+
+            gameRecord.VCGrid[playerTwoY][playerTwoX] = 2;
+
+            cout << endl;
+            cout << "Player Two's turn." << endl;
+            getNewValidMove(gameRecord.playerTwoX, gameRecord.playerTwoY, gameRecord.VCGrid);
+            gameRecord.VCGrid[playerTwoY][playerTwoX] = 22;
+
+            clearConsole();
+            setColor(WHITE_TEXT_BLACK_BACKGROUND);
+            scoreUpdate(gameRecord.scoreTwo, gameRecord.playerTwoX, gameRecord.playerTwoY,
+                gameRecord.MOGrid, gameRecord.NGrid);
+        }
+
+        gameRecord.totalMoves++;
+
+        gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
+        playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
+        visitedCoordinates };
+        saveGameProgress(fileGameRecords, gameRecord);
+
+        clearConsole();
     }
+}
 
     printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
     cout << endl << endl;
