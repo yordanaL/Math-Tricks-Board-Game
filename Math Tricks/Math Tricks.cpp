@@ -777,7 +777,7 @@ void generateHalfBoardUpToTheRequirements(char*& mathOperationsArr, size_t mathO
     }
 
     //Setting the two starting points (0, 0) and (N, M)
-    mathOperationsArr[0] = ' ';
+    mathOperationsArr[0] = '_';
     numArr[0] = 0;
 }
 
@@ -1040,7 +1040,7 @@ void scoreUpdate(double& score, int coordinateX, int coordinateY,
 
     switch (mathOperationsGrid[coordinateY][coordinateX])
     {
-    case ' ': score *= 0;
+    case '_': score *= 0;
         break;
     case '+': score += numGrid[coordinateY][coordinateX];
         break;
