@@ -145,7 +145,7 @@ int main() {
     int totalMoves = 0;
 
     Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
-        playerOneX, playerOneY, playerTwoX, playerOneY , mathOperationsGrid, numGrid,
+        playerOneX, playerOneY, playerTwoX, playerTwoY , mathOperationsGrid, numGrid,
         visitedCoordinates };
 
     fstream fileGameRecords;
@@ -157,8 +157,6 @@ int main() {
 
         playerTwoX = (int)boardLength;
         playerTwoY = (int)boardWidth;
-
-        cout << playerTwoX << " " << playerTwoY;
 
         //Generating game board
         mathOperationsArrLength = boardLength * boardWidth / 2;
@@ -196,9 +194,13 @@ int main() {
         createGrid(visitedCoordinates, gridWidth, gridLength);
 
         restoreGameProgress(fileGameRecords, gridLength, gridWidth, playerOneScore, playerTwoScore,
-            totalMoves, playerOneX, playerOneY, playerTwoX, playerOneY, mathOperationsGrid, numGrid, visitedCoordinates);
+            totalMoves, playerOneX, playerOneY, playerTwoX, playerTwoY, mathOperationsGrid, numGrid, visitedCoordinates);
 
-        clearConsole();
+
+        cout << gridLength << " " << gridWidth << endl <<
+            playerOneScore << " " << playerTwoScore << endl <<
+            totalMoves << " " << playerOneX << " " << playerOneY << " " << playerTwoX << " " << playerTwoY;
+       // clearConsole();
     }
 
     while (!isGameOver(playerOneX, playerOneY, playerTwoX,
@@ -977,7 +979,8 @@ void restoreGameProgress(fstream& fileGR, size_t gridLength, size_t gridWidth, d
 
     fileGR >> gridLength >> gridWidth;
 
-    fileGR >> scoreOne >> scoreTwo >> totalMoves;
+    fileGR >> scoreOne >> scoreTwo;
+    fileGR >> totalMoves;
     fileGR >> playerOneX >> playerOneY >> playerTwoX >> playerTwoY;
 
     for (size_t i = 0; i < gridWidth; i++) {
