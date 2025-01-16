@@ -108,8 +108,8 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
 void saveGameProgress(fstream& fileGR, Game gameRecord);
 //void restoreGameProgress(fstream& fileGR, Game& gameRecord);
 
-void restoreGameProgress(fstream& fileGR, size_t gridLength, size_t gridWidth, double scoreOne, double scoreTwo, int totalMoves,
-    int  playerOneX, int playerOneY, int playerTwoX, int playerTwoY, char** MOGrid, int** NGrid, int** VCGrid);
+void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, double& scoreOne, double& scoreTwo, int& totalMoves,
+    int& playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, char** MOGrid, int** NGrid, int** VCGrid);
 
 int main() {
     //A seed for the random number function
@@ -196,11 +196,7 @@ int main() {
         restoreGameProgress(fileGameRecords, gridLength, gridWidth, playerOneScore, playerTwoScore,
             totalMoves, playerOneX, playerOneY, playerTwoX, playerTwoY, mathOperationsGrid, numGrid, visitedCoordinates);
 
-
-        cout << gridLength << " " << gridWidth << endl <<
-            playerOneScore << " " << playerTwoScore << endl <<
-            totalMoves << " " << playerOneX << " " << playerOneY << " " << playerTwoX << " " << playerTwoY;
-       // clearConsole();
+        clearConsole();
     }
 
     while (!isGameOver(playerOneX, playerOneY, playerTwoX,
@@ -973,8 +969,8 @@ void saveGameProgress(fstream& fileGR, Game gameRecord) {
     fileGR.close();
 }
 
-void restoreGameProgress(fstream& fileGR, size_t gridLength, size_t gridWidth, double scoreOne, double scoreTwo, int totalMoves,
-    int  playerOneX, int playerOneY, int playerTwoX, int playerTwoY, char** MOGrid, int** NGrid, int** VCGrid) {
+void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, double& scoreOne, double& scoreTwo, int& totalMoves,
+    int&  playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, char** MOGrid, int** NGrid, int** VCGrid) {
     fileGR.open("Game Records.txt", ios::in);
 
     fileGR >> gridLength >> gridWidth;
