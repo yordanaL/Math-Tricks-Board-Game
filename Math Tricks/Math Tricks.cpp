@@ -3,6 +3,7 @@
 #include <windows.h>
 using namespace std;
 
+//All components needed to restore game progress
 struct Game {
     size_t gridLength;
     size_t gridWidth;
@@ -28,6 +29,7 @@ const int LEVEL_DIFFICULTY = 20;
 const int NEW_GAME = 1;
 const int RESUME_GAME = 2;
 
+//All the color combinations (font and background) used in the game
 const int BLACK_TEXT_WHITE_BACKGROUND = 240; //0 + 15*16
 const int WHITE_TEXT_BLACK_BACKGROUND = 15; //15 + 0*16
 const int GREY_TEXT_BLACK_BACKGROUND = 7; //7 + 0*16
@@ -112,7 +114,6 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
 
 void saveGameProgress(fstream& fileGR, Game gameRecord);
-//void restoreGameProgress(fstream& fileGR, Game& gameRecord);
 
 void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, double& scoreOne, double& scoreTwo, int& totalMoves,
     int& playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, char** MOGrid, int** NGrid, int** VCGrid);
@@ -157,6 +158,8 @@ int main() {
 
     fstream fileGameRecords;
 
+    //Depending on what the user choose from the start menu, the game will either build new game board
+    //with the original starting coordinates or it will load an old game board (if one exists)
     if (gameMode == NEW_GAME) {
         clearConsole();
         readingBoardLengthAndWidth(boardLength, boardWidth);
@@ -206,6 +209,7 @@ int main() {
         clearConsole();
     }
 
+    //The game continues until one or two of the players is "trapped" between visited cells
     while (!isGameOver(playerOneX, playerOneY, playerTwoX,
         playerTwoY, visitedCoordinates, gridLength, gridWidth)) {
         if (playerOnMove(totalMoves) == 1) {
@@ -261,10 +265,15 @@ int main() {
         clearConsole();
     }
 
+    //When the game is over the file gets cleaned and victory message is printed in the console
     fileGameRecords.open("Game Records.txt", ios::out);
-    fileGameRecords << " ";
-    fileGameRecords.close();
-
+    if (!fileGameRecords.is_open()) {
+        cout << "Could not open file!";
+    }
+    else {
+        fileGameRecords << " ";
+        fileGameRecords.close();
+    }
     printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
     cout << endl << endl;
 
@@ -275,15 +284,6 @@ int main() {
     cout << endl << endl;
     
     setColor(CORAL_TEXT_WHITE_BACKGROUND);
-    if (playerOneScore > playerTwoScore) {
-        cout << "CONGRATULATIONS PLAYER ONE ON YOUR VICTORY!" << endl;
-    }
-    else if (playerOneScore < playerTwoScore) {
-        cout << "CONGRATULATIONS PLAYER TWO ON YOUR VICTORY!" << endl;
-    }
-    else {
-        cout << "TIE!" << endl;
-    }
 
     setColor(GREY_TEXT_BLACK_BACKGROUND);
 
@@ -292,7 +292,6 @@ int main() {
 
     deleteGrid(mathOperationsGrid, gridWidth);
     deleteGrid(numGrid, gridWidth);
-    //deleteGrid(visualBoard, visualBoardWidth);
     deleteGrid(visitedCoordinates, gridWidth);
 
     return 0;
@@ -864,6 +863,7 @@ void colorCell(int** visitedCoordinates, size_t i, size_t j) {
     }
 }
 
+//Using the premade boards this function prints the board and the "coordinate system"
 void printGameBoard(char** mathOperationsGrid, int** numGrid,
     size_t gridLength, size_t gridWidth, int** visitedCoordinates) {
     int firstLoopStop = (int)gridWidth - 1;
@@ -903,6 +903,7 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
     }
 }
 
+//This function initialize the board with borders and the two starting coordinates
 void initializeVisitedCoordinatesBoard(int** visitedCoordinates, 
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength) {
     for (size_t i = 0; i < gridWidth; i++) {
@@ -943,69 +944,80 @@ void getNewValidMove(int& playerX, int& playerY,
     playerY = newY;
 }
 
+//If the game is closed before it has finished it can be resume when the game is open again
 void saveGameProgress(fstream& fileGR, Game gameRecord) {
     fileGR.open("Game Records.txt", ios::out);
 
-    fileGR << gameRecord.gridLength << " " << gameRecord.gridWidth << endl;
-
-    fileGR << gameRecord.scoreOne << " " << gameRecord.scoreTwo << " " << gameRecord.totalMoves << endl;
-    fileGR << gameRecord.playerOneX << " " << gameRecord.playerOneY
-        << " " << gameRecord.playerTwoX << " " << gameRecord.playerTwoY << endl;
-
-    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
-        for (size_t j = 0; j < gameRecord.gridLength; j++) {
-            fileGR << gameRecord.MOGrid[i][j] << " ";
-        }
-        //fileGR << endl;
+    if (!fileGR.is_open()) {
+        cout << "Could not open file!";
     }
-    fileGR << endl;
+    else {
+        fileGR << gameRecord.gridLength << " " << gameRecord.gridWidth << endl;
 
-    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
-        for (size_t j = 0; j < gameRecord.gridLength; j++) {
-            fileGR << gameRecord.NGrid[i][j] << " ";
+        fileGR << gameRecord.scoreOne << " " << gameRecord.scoreTwo << " " << gameRecord.totalMoves << endl;
+        fileGR << gameRecord.playerOneX << " " << gameRecord.playerOneY
+            << " " << gameRecord.playerTwoX << " " << gameRecord.playerTwoY << endl;
+
+        for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+            for (size_t j = 0; j < gameRecord.gridLength; j++) {
+                fileGR << gameRecord.MOGrid[i][j] << " ";
+            }
         }
-        //fileGR << endl;
-    }
-    fileGR << endl;
+        fileGR << endl;
 
-    for (size_t i = 0; i < gameRecord.gridWidth; i++) {
-        for (size_t j = 0; j < gameRecord.gridLength; j++) {
-            fileGR << gameRecord.VCGrid[i][j] << " ";
+        for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+            for (size_t j = 0; j < gameRecord.gridLength; j++) {
+                fileGR << gameRecord.NGrid[i][j] << " ";
+            }
         }
-        //fileGR << endl;
-    }
-    fileGR << endl;
+        fileGR << endl;
 
-    fileGR.close();
+        for (size_t i = 0; i < gameRecord.gridWidth; i++) {
+            for (size_t j = 0; j < gameRecord.gridLength; j++) {
+                fileGR << gameRecord.VCGrid[i][j] << " ";
+            }
+        }
+        fileGR << endl;
+
+        fileGR.close();
+    }
 }
 
-void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, double& scoreOne, double& scoreTwo, int& totalMoves,
-    int&  playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, char** MOGrid, int** NGrid, int** VCGrid) {
+//Every part of the game can be restored with this function
+void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, 
+    double& scoreOne, double& scoreTwo, int& totalMoves,
+    int&  playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, 
+    char** MOGrid, int** NGrid, int** VCGrid) {
     fileGR.open("Game Records.txt", ios::in);
 
-    fileGR >> gridLength >> gridWidth;
-
-    fileGR >> scoreOne >> scoreTwo;
-    fileGR >> totalMoves;
-    fileGR >> playerOneX >> playerOneY >> playerTwoX >> playerTwoY;
-
-    for (size_t i = 0; i < gridWidth; i++) {
-        for (size_t j = 0; j < gridLength; j++) {
-            fileGR >> MOGrid[i][j];
-        }
+    if (!fileGR.is_open()) {
+        cout << "Could not open file!";
     }
+    else {
+        fileGR >> gridLength >> gridWidth;
 
-    for (size_t i = 0; i < gridWidth; i++) {
-        for (size_t j = 0; j < gridLength; j++) {
-            fileGR >> NGrid[i][j];
+        fileGR >> scoreOne >> scoreTwo;
+        fileGR >> totalMoves;
+        fileGR >> playerOneX >> playerOneY >> playerTwoX >> playerTwoY;
+
+        for (size_t i = 0; i < gridWidth; i++) {
+            for (size_t j = 0; j < gridLength; j++) {
+                fileGR >> MOGrid[i][j];
+            }
         }
-    }
 
-    for (size_t i = 0; i < gridWidth; i++) {
-        for (size_t j = 0; j < gridLength; j++) {
-            fileGR >> VCGrid[i][j];
+        for (size_t i = 0; i < gridWidth; i++) {
+            for (size_t j = 0; j < gridLength; j++) {
+                fileGR >> NGrid[i][j];
+            }
         }
-    }
 
-    fileGR.close();
+        for (size_t i = 0; i < gridWidth; i++) {
+            for (size_t j = 0; j < gridLength; j++) {
+                fileGR >> VCGrid[i][j];
+            }
+        }
+
+        fileGR.close();
+    }
 }
