@@ -47,7 +47,7 @@ const int WHITE_TEXT_GREEN_BACKGROUND = 47; //15 + 2*16
 const int YELLOW_TEXT_GREEN_BACKGROUND = 46; //14 + 2*16
 const int CORAL_TEXT_WHITE_BACKGROUND = 252; //12 + 15*16
 
-void startMenu(int& gameMode, fstream& gameRecord);
+void startMenu(int& gameMode, fstream& gameRecord, long fileGameRecordSize);
 void readingBoardLengthAndWidth(size_t& boardLength, size_t& boardWidth);
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
@@ -142,11 +142,10 @@ int main() {
 
     fstream fileGameRecords;
 
-    long fileGameRecordsSize = fileSize(fileGameRecords);
-    cout << fileGameRecordsSize << endl;
+    long fileGameRecordSize = fileSize(fileGameRecords);
 
     int gameMode = 0;
-    startMenu(gameMode, fileGameRecords);
+    startMenu(gameMode, fileGameRecords, fileGameRecordSize);
 
     size_t boardLength = MIN_BOARD_LENGTH, boardWidth = MIN_BOARD_WIDTH;
     size_t mathOperationsArrLength = 0;
@@ -338,7 +337,7 @@ int main() {
     return 0;
 }
 
-void startMenu(int& gameMode, fstream& gameRecord) {
+void startMenu(int& gameMode, fstream& gameRecord, long fileGameRecordSize) {
     int NGOrRG = 0;
 
     cout << "Welcome to Math Tricks!" << endl << endl;
@@ -353,13 +352,18 @@ void startMenu(int& gameMode, fstream& gameRecord) {
     if (NGOrRG == 1) {
         gameMode = 1;
     }
-    else if (NGOrRG == 2) {
+    else if (NGOrRG == 2 && fileGameRecordSize != 0) {
         gameMode = 2;
+    }
+    else if (NGOrRG == 2 && fileGameRecordSize == 0) {
+        clearConsole();
+        cout << "No record of previous game was found!" << endl;
+        startMenu(gameMode, gameRecord, fileGameRecordSize);
     }
     else {
         clearConsole();
         cout << "Please enter valid option!" << endl;
-        startMenu(gameMode, gameRecord);
+        startMenu(gameMode, gameRecord, fileGameRecordSize);
     }
 }
 
