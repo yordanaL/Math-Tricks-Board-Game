@@ -27,6 +27,8 @@ const int MARGIN = 2;
 const int BORDERS = 2;
 const int LEVEL_DIFFICULTY = 20;
 
+const int SIZE_EMPTY_FILE = 0;
+
 const int NEW_GAME = 1;
 const int RESUME_GAME = 2;
 
@@ -130,29 +132,18 @@ void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth,
 
 void isInputNumber();
 
-bool isFileEmpty(fstream& file) {
-    file.open("Game Records.txt", ios::in);
-    if (file.is_open()) {
-        return file.peek() == std::ifstream::traits_type::eof();
-    }
-    else {
-        // Файлът не е успешно отворен
-        return true; // В случай, че файлът не е намерен или отворен
-    }
-}
-
 void printScore(double playerOneScore, double playerTwoScore);
+
+long fileSize(fstream& file);
 
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
 
     fstream fileGameRecords;
-    if (isFileEmpty) {
-        cout << "empty";
-    }
-    else
-        cout << "not empty";
+
+    long fileGameRecordsSize = fileSize(fileGameRecords);
+    cout << fileGameRecordsSize << endl;
 
     int gameMode = 0;
     startMenu(gameMode, fileGameRecords);
@@ -313,7 +304,7 @@ int main() {
         cout << "Could not open file!";
     }
     else {
-        fileGameRecords << " ";
+        fileGameRecords << "";
         fileGameRecords.close();
     }
     printGameBoard(mathOperationsGrid, numGrid, gridLength, gridWidth, visitedCoordinates);
@@ -1114,4 +1105,16 @@ void printScore(double playerOneScore, double playerTwoScore) {
     cout << "Score of player one: " << playerOneScore << '\t'
         << '\t' << "Score of player two: " << playerTwoScore;
     cout << endl;
+}
+
+long fileSize(fstream& file) {
+    file.open("Game Records.txt", ios::in | ios::ate);
+
+    if (!file.is_open())
+        cout << "Could not open file!";
+
+    long size = file.tellg();
+    file.close();
+
+    return size;
 }
