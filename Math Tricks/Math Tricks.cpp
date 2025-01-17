@@ -24,10 +24,16 @@ const size_t MIN_BOARD_LENGTH = 4, MIN_BOARD_WIDTH = 4;
 const int NUMBER_OF_MATH_OPERATIONS = 5;
 const int MAX_DIGITS = 3;
 const int MARGIN = 2;
+const int BORDERS = 2;
 const int LEVEL_DIFFICULTY = 20;
 
 const int NEW_GAME = 1;
 const int RESUME_GAME = 2;
+
+const int POSITION_TAKEN_BY_PLAYER_ONE = 1;
+const int PLAYER_ONE_CURRENT_POSITION = 11;
+const int POSITION_TAKEN_BY_PLAYER_TWO = 2;
+const int PLAYER_TWO_CURRENT_POSITION = 22;
 
 //All the color combinations (font and background) used in the game
 const int BLACK_TEXT_WHITE_BACKGROUND = 240; //0 + 15*16
@@ -39,7 +45,7 @@ const int WHITE_TEXT_GREEN_BACKGROUND = 47; //15 + 2*16
 const int YELLOW_TEXT_GREEN_BACKGROUND = 46; //14 + 2*16
 const int CORAL_TEXT_WHITE_BACKGROUND = 252; //12 + 15*16
 
-void startMenu(int& gameMode);
+void startMenu(int& gameMode, fstream& gameRecord);
 void readingBoardLengthAndWidth(size_t& boardLength, size_t& boardWidth);
 
 bool isInputBoardSizeValid(size_t boardLength, size_t boardWidth);
@@ -108,22 +114,43 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
     size_t gridLength, size_t gridWidth, int** visitedCoordinates);
 
 void getNewValidMove(int& playerX, int& playerY, 
-    int** visitedCoordinates, size_t gridLength, size_t gridWidth);
+    int** visitedCoordinates, size_t gridLength, size_t gridWidth,
+    char** mathOperationsGrid, int** numGrid,
+    double playerOneScore, double playerTwoScore, int totalMoves);
 
 void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
 
 void saveGameProgress(fstream& fileGR, Game gameRecord);
 
-void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, double& scoreOne, double& scoreTwo, int& totalMoves,
-    int& playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, char** MOGrid, int** NGrid, int** VCGrid);
+void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth, 
+    double& scoreOne, double& scoreTwo, int& totalMoves,
+    int& playerOneX, int& playerOneY, int& playerTwoX, int& playerTwoY, 
+    char** MOGrid, int** NGrid, int** VCGrid);
+
+void isInputNumber();
+
+//bool isFileEmpty(fstream& file) {
+//    file.open("Game Records.txt", ios::in);
+//    return file.peek() == std::ifstream::traits_type::eof();
+//}
+
+void printScore(double playerOneScore, double playerTwoScore) {
+    setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+    cout << "Score of player one: " << playerOneScore << '\t'
+        << '\t' << "Score of player two: " << playerTwoScore;
+    cout << endl;
+}
 
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
 
+    fstream fileGameRecords;
+
     int gameMode = 0;
-    startMenu(gameMode);
+    startMenu(gameMode, fileGameRecords);
 
     size_t boardLength = MIN_BOARD_LENGTH, boardWidth = MIN_BOARD_WIDTH;
     size_t mathOperationsArrLength = 0;
@@ -153,10 +180,8 @@ int main() {
 
     Game gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
         playerOneX, playerOneY, playerTwoX, playerTwoY , mathOperationsGrid, numGrid,
-        visitedCoordinates 
+        visitedCoordinates
     };
-
-    fstream fileGameRecords;
 
     //Depending on what the user choose from the start menu, the game will either build new game board
     //with the original starting coordinates or it will load an old game board (if one exists)
@@ -177,8 +202,8 @@ int main() {
 
         difficultyCoefficient = calculateCoefficientOfDifficulty(boardLength, boardWidth);
 
-        gridLength = boardLength + 2;
-        gridWidth = boardWidth + 2;
+        gridLength = boardLength + BORDERS;
+        gridWidth = boardWidth + BORDERS;
 
         createGrid(mathOperationsGrid, gridWidth, gridLength);
 
@@ -196,17 +221,26 @@ int main() {
         clearConsole();
 
         fileGameRecords.open("Game Records.txt", ios::in);
-        fileGameRecords >> gridLength >> gridWidth;
-        fileGameRecords.close();
 
-        createGrid(mathOperationsGrid, gridWidth, gridLength);
-        createGrid(numGrid, gridWidth, gridLength);
-        createGrid(visitedCoordinates, gridWidth, gridLength);
+        if (!fileGameRecords.is_open()) {
+            cout << "Could not open file!";
+        }
+        else {
+            fileGameRecords >> gridLength >> gridWidth;
+            fileGameRecords.close();
 
-        restoreGameProgress(fileGameRecords, gridLength, gridWidth, playerOneScore, playerTwoScore,
-            totalMoves, playerOneX, playerOneY, playerTwoX, playerTwoY, mathOperationsGrid, numGrid, visitedCoordinates);
+            createGrid(mathOperationsGrid, gridWidth, gridLength);
+            createGrid(numGrid, gridWidth, gridLength);
+            createGrid(visitedCoordinates, gridWidth, gridLength);
 
-        clearConsole();
+            restoreGameProgress(fileGameRecords, gridLength, gridWidth, playerOneScore, playerTwoScore,
+                totalMoves, playerOneX, playerOneY, playerTwoX, playerTwoY, 
+                mathOperationsGrid, numGrid, visitedCoordinates);
+
+            fileGameRecords.close();
+
+            clearConsole();
+        }
     }
 
     //The game continues until one or two of the players is "trapped" between visited cells
@@ -222,12 +256,13 @@ int main() {
                 << '\t' << "Score of player two: " << playerTwoScore;
             cout << endl;
 
-            visitedCoordinates[playerOneY][playerOneX] = 1;
+            visitedCoordinates[playerOneY][playerOneX] = POSITION_TAKEN_BY_PLAYER_ONE;
 
             cout << endl;
             cout << "Player One's turn." << endl;
-            getNewValidMove(playerOneX, playerOneY, visitedCoordinates,gridLength, gridWidth);
-            visitedCoordinates[playerOneY][playerOneX] = 11;
+            getNewValidMove(playerOneX, playerOneY, visitedCoordinates,gridLength, gridWidth,
+                mathOperationsGrid, numGrid, playerOneScore, playerTwoScore, totalMoves);
+            visitedCoordinates[playerOneY][playerOneX] = PLAYER_ONE_CURRENT_POSITION;
 
             clearConsole();
             setColor(WHITE_TEXT_BLACK_BACKGROUND);
@@ -243,12 +278,13 @@ int main() {
                 << '\t' << "Score of player two: " << playerTwoScore;
             cout << endl;
 
-            visitedCoordinates[playerTwoY][playerTwoX] = 2;
+            visitedCoordinates[playerTwoY][playerTwoX] = POSITION_TAKEN_BY_PLAYER_TWO;
 
             cout << endl;
             cout << "Player Two's turn." << endl;
-            getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates, gridLength, gridWidth);
-            visitedCoordinates[playerTwoY][playerTwoX] = 22;
+            getNewValidMove(playerTwoX, playerTwoY, visitedCoordinates, gridLength, gridWidth,
+                mathOperationsGrid, numGrid, playerOneScore, playerTwoScore, totalMoves);
+            visitedCoordinates[playerTwoY][playerTwoX] = PLAYER_TWO_CURRENT_POSITION;
 
             clearConsole();
             setColor(WHITE_TEXT_BLACK_BACKGROUND);
@@ -284,6 +320,15 @@ int main() {
     cout << endl << endl;
     
     setColor(CORAL_TEXT_WHITE_BACKGROUND);
+    if (playerOneScore > playerTwoScore) {
+        cout << "CONGRATULATIONS PLAYER ONE ON YOUR VICTORY!" << endl;
+    }
+    else if (playerOneScore < playerTwoScore) {
+        cout << "CONGRATULATIONS PLAYER TWO ON YOUR VICTORY!" << endl;
+    }
+    else {
+        cout << "TIE!" << endl;
+    }
 
     setColor(GREY_TEXT_BLACK_BACKGROUND);
 
@@ -297,7 +342,7 @@ int main() {
     return 0;
 }
 
-void startMenu(int& gameMode) {
+void startMenu(int& gameMode, fstream& gameRecord) {
     int NGOrRG = 0;
 
     cout << "Welcome to Math Tricks!" << endl << endl;
@@ -306,6 +351,8 @@ void startMenu(int& gameMode) {
     cout << "2) Resume Game" << endl;
     cout << "Please, enter your choice(1 or 2): ";
     cin >> NGOrRG;
+
+    isInputNumber();
 
     if (NGOrRG == 1) {
         gameMode = 1;
@@ -316,7 +363,7 @@ void startMenu(int& gameMode) {
     else {
         clearConsole();
         cout << "Please enter valid option!" << endl;
-        startMenu(gameMode);
+        startMenu(gameMode, gameRecord);
     }
 }
 
@@ -328,6 +375,8 @@ void readingBoardLengthAndWidth(size_t& boardLength, size_t& boardWidth) {
     cout << "Enter the board width (>= 4): ";
     cin >> boardWidth;
 
+    isInputNumber();
+
     while (!isInputBoardSizeValid(boardLength, boardWidth)) {
         clearConsole();
         cout << "Invalid board size! Please, enter new board size." << endl;
@@ -336,6 +385,8 @@ void readingBoardLengthAndWidth(size_t& boardLength, size_t& boardWidth) {
         cin >> boardLength;
         cout << "Enter the board width (>= 4): ";
         cin >> boardWidth;
+
+        isInputNumber();
     }
 }
 
@@ -882,7 +933,11 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
 
             if (numGrid[i][j] < 10) {
                 colorCell(visitedCoordinates, i, j);
-                cout << mathOperationsGrid[i][j] << "  " << numGrid[i][j] << "\t";
+                if (mathOperationsGrid[i][j] == '_')
+                    cout << " " << "  " << numGrid[i][j] << "\t";
+                else 
+                    cout << mathOperationsGrid[i][j] << "  " << numGrid[i][j] << "\t";
+
                 setColor(WHITE_TEXT_BLACK_BACKGROUND);
             }
             else if (numGrid[i][j] >= 10) {
@@ -929,7 +984,9 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
 }
 
 void getNewValidMove(int& playerX, int& playerY, 
-    int** visitedCoordinates, size_t gridLength, size_t gridWidth) {
+    int** visitedCoordinates, size_t gridLength, size_t gridWidth, 
+    char** mathOperationsGrid, int** numGrid,
+    double playerOneScore, double playerTwoScore, int totalMoves) {
     int newX = 0;
     int newY = 0;
 
@@ -937,7 +994,20 @@ void getNewValidMove(int& playerX, int& playerY,
         cout << "Enter next move: ";
         cin >> newX >> newY;
 
-       // cout << '\r';
+        setColor(WHITE_TEXT_BLACK_BACKGROUND);
+        isInputNumber();
+        clearConsole();
+        printGameBoard(mathOperationsGrid, numGrid,
+            gridLength, gridWidth, visitedCoordinates);
+        cout << endl;
+        setColor(BLACK_TEXT_WHITE_BACKGROUND);
+        printScore(playerOneScore, playerTwoScore);
+        cout << endl;
+
+        if (playerOnMove(totalMoves) == 1)
+            cout << "Player One's turn." << endl;
+        else
+            cout << "Player Two's turn." << endl;
     }
 
     playerX = newX;
@@ -1019,5 +1089,14 @@ void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth,
         }
 
         fileGR.close();
+    }
+}
+
+void isInputNumber() {
+    while (cin.fail()) {
+        cin.clear();
+        cin.ignore(INT_MAX, '\n');
+
+        clearConsole();
     }
 }
