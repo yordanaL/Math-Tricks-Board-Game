@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <windows.h>
 using namespace std;
@@ -130,24 +130,29 @@ void restoreGameProgress(fstream& fileGR, size_t& gridLength, size_t& gridWidth,
 
 void isInputNumber();
 
-//bool isFileEmpty(fstream& file) {
-//    file.open("Game Records.txt", ios::in);
-//    return file.peek() == std::ifstream::traits_type::eof();
-//}
-
-void printScore(double playerOneScore, double playerTwoScore) {
-    setColor(BLACK_TEXT_WHITE_BACKGROUND);
-
-    cout << "Score of player one: " << playerOneScore << '\t'
-        << '\t' << "Score of player two: " << playerTwoScore;
-    cout << endl;
+bool isFileEmpty(fstream& file) {
+    file.open("Game Records.txt", ios::in);
+    if (file.is_open()) {
+        return file.peek() == std::ifstream::traits_type::eof();
+    }
+    else {
+        // Файлът не е успешно отворен
+        return true; // В случай, че файлът не е намерен или отворен
+    }
 }
+
+void printScore(double playerOneScore, double playerTwoScore);
 
 int main() {
     //A seed for the random number function
     srand((unsigned)time(0));
 
     fstream fileGameRecords;
+    if (isFileEmpty) {
+        cout << "empty";
+    }
+    else
+        cout << "not empty";
 
     int gameMode = 0;
     startMenu(gameMode, fileGameRecords);
@@ -216,6 +221,11 @@ int main() {
         createGrid(visitedCoordinates, gridWidth, gridLength);
         initializeVisitedCoordinatesBoard(visitedCoordinates, gridWidth, gridLength,
             boardWidth, boardLength);
+
+        gameRecord = { gridLength, gridWidth, playerOneScore, playerTwoScore, totalMoves,
+        playerOneX, playerOneY, playerTwoX, playerTwoY , mathOperationsGrid, numGrid,
+        visitedCoordinates };
+        saveGameProgress(fileGameRecords, gameRecord);
     }
     else if (gameMode == RESUME_GAME) {
         clearConsole();
@@ -252,9 +262,7 @@ int main() {
 
             setColor(BLACK_TEXT_WHITE_BACKGROUND);
 
-            cout << "Score of player one: " << playerOneScore << '\t'
-                << '\t' << "Score of player two: " << playerTwoScore;
-            cout << endl;
+            printScore(playerOneScore, playerTwoScore);
 
             visitedCoordinates[playerOneY][playerOneX] = POSITION_TAKEN_BY_PLAYER_ONE;
 
@@ -274,9 +282,7 @@ int main() {
 
             setColor(BLACK_TEXT_WHITE_BACKGROUND);
 
-            cout << "Score of player one: " << playerOneScore << '\t'
-                << '\t' << "Score of player two: " << playerTwoScore;
-            cout << endl;
+            printScore(playerOneScore, playerTwoScore);
 
             visitedCoordinates[playerTwoY][playerTwoX] = POSITION_TAKEN_BY_PLAYER_TWO;
 
@@ -315,8 +321,7 @@ int main() {
 
     setColor(BLACK_TEXT_WHITE_BACKGROUND);
 
-    cout << "Score of player one: " << playerOneScore << '\t'
-        << '\t' << "Score of player two: " << playerTwoScore;
+    printScore(playerOneScore, playerTwoScore);
     cout << endl << endl;
     
     setColor(CORAL_TEXT_WHITE_BACKGROUND);
@@ -923,7 +928,7 @@ void printGameBoard(char** mathOperationsGrid, int** numGrid,
     for (size_t i = 0; i < firstLoopStop; i++) {
         for (size_t j = 0; j < secondLoopStop; j++) {
             if (i == 0) {
-                cout << j << '\t'<<"   ";
+                cout << j << '\t';
                 continue;
             }
             if (j == 0) {
@@ -1008,6 +1013,8 @@ void getNewValidMove(int& playerX, int& playerY,
             cout << "Player One's turn." << endl;
         else
             cout << "Player Two's turn." << endl;
+
+        cout << "Invalid move!" << endl;
     }
 
     playerX = newX;
@@ -1099,4 +1106,12 @@ void isInputNumber() {
 
         clearConsole();
     }
+}
+
+void printScore(double playerOneScore, double playerTwoScore) {
+    setColor(BLACK_TEXT_WHITE_BACKGROUND);
+
+    cout << "Score of player one: " << playerOneScore << '\t'
+        << '\t' << "Score of player two: " << playerTwoScore;
+    cout << endl;
 }
