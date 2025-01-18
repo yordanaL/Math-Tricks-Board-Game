@@ -122,6 +122,8 @@ void getNewValidMove(int& playerX, int& playerY,
 
 void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
     size_t gridWidth, size_t gridLength, size_t boardWidth, size_t boardLength);
+void initializeMathOperationsBoard(char** mathOperationsGrid, size_t gridWidth, size_t gridLength);
+void initializeNumBoard(int** numGrid, size_t gridWidth, size_t gridLength);
 
 void saveGameProgress(fstream& fileGR, Game gameRecord);
 
@@ -142,10 +144,16 @@ int main() {
 
     fstream fileGameRecords;
 
-    long fileGameRecordSize = fileSize(fileGameRecords);
+    //This ensures that a file will exist (in case that someone 
+    //decides to resume the game without having ever played before)
+    fileGameRecords.open("Game Records.txt", ios::app);
+    if (!fileGameRecords.is_open()) {
+        cout << "Could not open file!";
+    }
+    fileGameRecords.close(); 
 
+    long fileGameRecordSize = fileSize(fileGameRecords);
     int gameMode = 0;
-    startMenu(gameMode, fileGameRecords, fileGameRecordSize);
 
     size_t boardLength = MIN_BOARD_LENGTH, boardWidth = MIN_BOARD_WIDTH;
     size_t mathOperationsArrLength = 0;
@@ -178,6 +186,8 @@ int main() {
         visitedCoordinates
     };
 
+    startMenu(gameMode, fileGameRecords, fileGameRecordSize);
+
     //Depending on what the user choose from the start menu, the game will either build new game board
     //with the original starting coordinates or it will load an old game board (if one exists)
     if (gameMode == NEW_GAME) {
@@ -201,8 +211,10 @@ int main() {
         gridWidth = boardWidth + BORDERS;
 
         createGrid(mathOperationsGrid, gridWidth, gridLength);
+        initializeMathOperationsBoard(mathOperationsGrid, gridWidth, gridLength);
 
         createGrid(numGrid, gridWidth, gridLength);
+        initializeNumBoard(numGrid, gridWidth, gridLength);
 
         generateGameBoard(mathOperationsArr, mathOperationsArrLength,
             numArr, numArrLength, difficultyCoefficient,
@@ -981,6 +993,22 @@ void initializeVisitedCoordinatesBoard(int** visitedCoordinates,
 
     visitedCoordinates[1][1] = 11;
     visitedCoordinates[boardWidth][boardLength] = 22;
+}
+
+void initializeMathOperationsBoard(char** mathOperationsGrid, size_t gridWidth, size_t gridLength) {
+    for (size_t i = 0; i < gridWidth; i++) {
+        for (size_t j = 0; j < gridLength; j++) {
+            mathOperationsGrid[i][j] = '_';
+        }
+    }
+}
+
+void initializeNumBoard(int** numGrid, size_t gridWidth, size_t gridLength) {
+    for (size_t i = 0; i < gridWidth; i++) {
+        for (size_t j = 0; j < gridLength; j++) {
+            numGrid[i][j] = 0;
+        }
+    }
 }
 
 void getNewValidMove(int& playerX, int& playerY, 
